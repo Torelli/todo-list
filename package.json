@@ -1,7 +1,7 @@
 {
   "name": "todo-list",
   "version": "1.0.0",
-  "description": "Just a simple todo-list app, so I cant practice some clean code",
+  "description": "Just a simple todo-list app, so I can practice some clean code",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

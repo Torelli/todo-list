@@ -1,2 +1,2 @@
 # todo-list
-Just a simple todo-list app, so I cant practice some clean code
+Just a simple todo-list app, so I can practice some clean code
