@@ -5,6 +5,7 @@ import deleteProject from "./controllers/Projects/deleteProject";
 import createTodo from "./controllers/Todos/createTodo";
 import getTodos from "./controllers/Todos/getTodos";
 import updateTodo from "./controllers/Todos/updateTodo";
+import deleteTodo from "./controllers/Todos/deleteTodo";
 
 createTodo(
   projects[0],
@@ -32,7 +33,7 @@ getTodos(projects[0]);
 getTodos(projects[1]);
 
 updateProject.title(projects[1], "Work");
-updateProject.description(projects[1], "Work related todos");
+updateProject.description(projects[1], "Work related to-dos");
 updateProject.dueDate(projects[1], new Date("1995-12-17T03:24:00"));
 
 getProjects();
@@ -44,3 +45,17 @@ createProject("Deleted project", "This project will be deleted", new Date());
 getProjects();
 deleteProject(projects[2]);
 getProjects();
+
+createTodo(
+  projects[1],
+  "Deleted todo",
+  "This to-do will be deleted",
+  new Date(),
+  "low",
+  false
+);
+
+console.table(getTodos(projects[1]));
+
+deleteTodo(projects[1], projects[1].todos[1]);
+console.table(getTodos(projects[1]));
