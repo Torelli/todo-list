@@ -1,4 +1,4 @@
-function updateProjectTitle(project, title) {
+function updateTitle(project, title) {
   if (title && title != project.title) {
     project.title = title;
   } else {
@@ -6,7 +6,7 @@ function updateProjectTitle(project, title) {
   }
 }
 
-function updateProjectDescription(project, description) {
+function updateDescription(project, description) {
   if (description && description != project.description) {
     project.description = description;
   } else {
@@ -14,7 +14,7 @@ function updateProjectDescription(project, description) {
   }
 }
 
-function updateProjectDueDate(project, dueDate) {
+function updateDueDate(project, dueDate) {
   if (dueDate && dueDate != project.dueDate) {
     project.dueDate = dueDate;
   } else {
@@ -22,15 +22,10 @@ function updateProjectDueDate(project, dueDate) {
   }
 }
 
-export default function updateProject(
-  project,
-  newTitle = null,
-  newDescription = null,
-  newDueDate = null
-) {
-  updateProjectTitle(project, newTitle);
-  updateProjectDescription(project, newDescription);
-  updateProjectDueDate(project, newDueDate);
-}
+const updateProject = {
+  title: updateTitle,
+  description: updateDescription,
+  dueDate: updateDueDate,
+};
 
-export { updateProjectTitle, updateProjectDescription, updateProjectDueDate };
+export default updateProject;

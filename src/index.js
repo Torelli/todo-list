@@ -29,6 +29,8 @@ getProjects();
 getTodos(projects[0]);
 getTodos(projects[1]);
 
-updateProject(projects[1], "Work", "Work related todos", new Date("1995-12-17T03:24:00"));
+updateProject.title(projects[1], "Work");
+updateProject.description(projects[1], "Work related todos");
+updateProject.dueDate(projects[1], new Date("1995-12-17T03:24:00"));
 
 getProjects();
