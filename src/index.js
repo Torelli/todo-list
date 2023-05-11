@@ -3,6 +3,7 @@ import getProjects from "./controllers/Projects/getProjects";
 import updateProject from "./controllers/Projects/updateProject";
 import createTodo from "./controllers/Todos/createTodo";
 import getTodos from "./controllers/Todos/getTodos";
+import updateTodo from "./controllers/Todos/updateTodo";
 
 createTodo(
   projects[0],
@@ -34,3 +35,6 @@ updateProject.description(projects[1], "Work related todos");
 updateProject.dueDate(projects[1], new Date("1995-12-17T03:24:00"));
 
 getProjects();
+
+updateTodo.title(projects[1].todos[0], "Work todo");
+console.log(getTodos(projects[1])[0]);
