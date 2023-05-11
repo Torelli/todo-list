@@ -1,6 +1,7 @@
 import createProject, { projects } from "./controllers/Projects/createProject";
 import getProjects from "./controllers/Projects/getProjects";
 import updateProject from "./controllers/Projects/updateProject";
+import deleteProject from "./controllers/Projects/deleteProject";
 import createTodo from "./controllers/Todos/createTodo";
 import getTodos from "./controllers/Todos/getTodos";
 import updateTodo from "./controllers/Todos/updateTodo";
@@ -38,3 +39,8 @@ getProjects();
 
 updateTodo.title(projects[1].todos[0], "Work todo");
 console.log(getTodos(projects[1])[0]);
+
+createProject("Deleted project", "This project will be deleted", new Date());
+getProjects();
+deleteProject(projects[2]);
+getProjects();
