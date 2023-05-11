@@ -1,6 +1,6 @@
 import toDosFactory from "../../models/todos";
 
-export default function addTodos(
+export default function createTodo(
   project,
   title,
   description,
