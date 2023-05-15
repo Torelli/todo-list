@@ -3,59 +3,16 @@ import getProjects from "./controllers/Projects/getProjects";
 import updateProject from "./controllers/Projects/updateProject";
 import deleteProject from "./controllers/Projects/deleteProject";
 import createTodo from "./controllers/Todos/createTodo";
-import getTodos from "./controllers/Todos/getTodos";
 import updateTodo from "./controllers/Todos/updateTodo";
 import deleteTodo from "./controllers/Todos/deleteTodo";
+import AppUI from "./view/AppUI";
+import PubSub from "pubsub-js";
 
-createTodo(
-  projects[0],
-  "Default todo",
-  "This is a default todo from the 'Home' project",
-  new Date(),
-  "high",
-  false
-);
-
-createProject("Test project", "This is a test project", new Date());
-
-createTodo(
-  projects[1],
-  "Test todo",
-  "This is a test todo from the 'Test' project",
-  new Date(),
-  "low",
-  false
-);
-
-getProjects();
-
-getTodos(projects[0]);
-getTodos(projects[1]);
-
-updateProject.title(projects[1], "Work");
-updateProject.description(projects[1], "Work related to-dos");
-updateProject.dueDate(projects[1], new Date("1995-12-17T03:24:00"));
-
-getProjects();
-
-updateTodo.title(projects[1].todos[0], "Work todo");
-console.log(getTodos(projects[1])[0]);
-
-createProject("Deleted project", "This project will be deleted", new Date());
-getProjects();
-deleteProject(projects[2]);
-getProjects();
-
-createTodo(
-  projects[1],
-  "Deleted todo",
-  "This to-do will be deleted",
-  new Date(),
-  "low",
-  false
-);
-
-console.table(getTodos(projects[1]));
-
-deleteTodo(projects[1], projects[1].todos[1]);
-console.table(getTodos(projects[1]));
+document.addEventListener("DOMContentLoaded", () => {
+  AppUI();
+  projects[0].getProject();
+  PubSub.subscribe("new_todo", (msg, data) => {
+    createTodo(data[0], data[1], data[2], data[3], data[4], data[5]);
+    PubSub.publish("get_todos");
+  });
+});
