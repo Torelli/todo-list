@@ -1,5 +1,6 @@
 import PubSub from "pubsub-js";
 import ProjectUI from "./ProjectUI";
+import TodosUI from "./TodosUI";
 
 function createNewTodo(project) {
   PubSub.publish("new_todo", [
@@ -10,42 +11,6 @@ function createNewTodo(project) {
     "High",
     false,
   ]);
-}
-
-function getTodos(todos, todosContainer) {
-  if (todos.length !== 0) {
-    todosContainer.innerText = "";
-    for (let todo of todos) {
-      const container = document.createElement("div");
-      container.classList.add(
-        "flex",
-        "p-4",
-        "border",
-        "border-slate-300",
-        "w-full",
-        "rounded",
-        "drop-shadow"
-      );
-
-      const titleDesc = document.createElement("div");
-
-      const title = document.createElement("p");
-      title.classList.add("text-lg", "bold");
-      title.innerText = todo.title;
-      titleDesc.appendChild(title);
-
-      const description = document.createElement("p");
-      description.classList.add("text-sm", "text-slate-500");
-      description.innerText = todo.description;
-      titleDesc.appendChild(description);
-
-      container.appendChild(titleDesc);
-
-      todosContainer.appendChild(container);
-    }
-  } else {
-    todosContainer.innerText = "No to-dos yet!";
-  }
 }
 
 export default function AppUI() {
@@ -59,10 +24,10 @@ export default function AppUI() {
     const todos = project.todos;
     projectTitle.innerText = project.title;
     projectDescription.innerText = project.description;
-    getTodos(todos, todosContainer);
+    TodosUI(todos, todosContainer);
 
     PubSub.subscribe("get_todos", () => {
-      getTodos(todos, todosContainer);
+      TodosUI(todos, todosContainer);
     });
 
     btnNewTodo.addEventListener("click", () => {
