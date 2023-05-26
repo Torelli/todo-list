@@ -34,7 +34,7 @@ export default function ProjectUI() {
 
   container.appendChild(btnContainer);
 
-  const todosContainer = document.createElement("div");
+  const todosContainer = document.createElement("table");
   todosContainer.classList.add(
     "mt-12",
     "flex",

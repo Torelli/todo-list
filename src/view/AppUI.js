@@ -3,12 +3,18 @@ import ProjectUI from "./ProjectUI";
 import TodosUI from "./TodosUI";
 
 function createNewTodo(project) {
+  let priorityRand = () => {
+    let choice = (Math.floor(Math.random() * 3));
+     return (choice === 0 ) ? 'High'
+    : choice === 1 ? 'Medium'
+    : 'Low'
+  }
   PubSub.publish("new_todo", [
     project,
     "Test todo",
     "This is just a test",
-    new Date(),
-    "High",
+    new Date("04/23/2022"),
+    priorityRand(),
     false,
   ]);
 }
