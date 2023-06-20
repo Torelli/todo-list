@@ -5,7 +5,9 @@ function stylizePriority(priority, priorityContainer) {
       "px-2",
       "py-1",
       "bg-red-300",
-      "text-red-800"
+      "text-red-800",
+      "font-bold",
+      "text-sm"
     );
   } else if (priority === "Medium") {
     priorityContainer.children[0].classList.add(
@@ -13,7 +15,9 @@ function stylizePriority(priority, priorityContainer) {
       "px-2",
       "py-1",
       "bg-yellow-300",
-      "text-yellow-800"
+      "text-yellow-800",
+      "font-bold",
+      "text-sm"
     );
   } else {
     priorityContainer.children[0].classList.add(
@@ -21,8 +25,18 @@ function stylizePriority(priority, priorityContainer) {
       "px-2",
       "py-1",
       "bg-green-300",
-      "text-green-800"
+      "text-green-800",
+      "font-bold",
+      "text-sm"
     );
+  }
+}
+
+function stylizeStatus(status) {
+  if (status) {
+    return `<div class="text-center w-12"><i class="fa-regular fa-circle-check text-3xl"></i></div>`;
+  } else {
+    return`<div class="text-center w-12"><i class="fa-regular fa-circle text-3xl"></i></div>`;
   }
 }
 
@@ -41,58 +55,72 @@ function formatDueDate(dueDate) {
 }
 
 function createHeader() {
-  const container = document.createElement("thead");
+  const tableHeaders = document.createElement("div");
+  tableHeaders.classList.add(
+    "text-left",
+    "grid",
+    "grid-cols-4",
+    "px-4",
+    "py-2",
+    "gap-2",
+    "w-full",
+    "font-bold",
+    "border",
+    "border-slate-300",
+    "bg-slate-100",
+    "rounded"
+  );
 
-  const tableHeaders = document.createElement("tr");
-  tableHeaders.classList.add("text-left");
-
-  const title = document.createElement("th");
-  title.innerText = "Todo";
-  title.classList.add("w-[60ch]");
+  const title = document.createElement("p");
+  title.innerText = "Title";
   tableHeaders.appendChild(title);
 
-  const dueDate = document.createElement("th");
+  const dueDate = document.createElement("p");
   dueDate.innerText = "Due date";
   tableHeaders.appendChild(dueDate);
 
-  const priority = document.createElement("th");
+  const priority = document.createElement("p");
   priority.innerText = "Priority";
   tableHeaders.appendChild(priority);
 
-  const status = document.createElement("th");
+  const status = document.createElement("p");
   status.innerText = "Status";
   tableHeaders.appendChild(status);
 
-  const options = document.createElement("th");
-  options.innerText = "Options";
-  tableHeaders.appendChild(options);
-
-  container.appendChild(tableHeaders);
-
-  return container;
+  return tableHeaders;
 }
 
 export default function TodosUI(todos, todosContainer) {
   if (todos.length !== 0) {
-    todosContainer.classList.remove(
-      "flex",
-      "flex-col",
-      "gap-1",
-      "items-center",
-      "justify-center"
-    );
-    todosContainer.classList.add("table-fixed", "w-full");
+    todosContainer.classList.add("w-full");
     todosContainer.innerText = "";
 
     todosContainer.appendChild(createHeader());
 
-    const tableBody = document.createElement("tbody");
-
     for (let todo of todos) {
-      const tableRow = document.createElement("tr");
-      tableRow.classList.add("border-y", "border-y-slate-300");
+      const tableRow = document.createElement("div");
+      tableRow.classList.add(
+        "group", 
+        "cursor-pointer",
+        "text-left",
+        "grid",
+        "grid-cols-4",
+        "px-4",
+        "py-2",
+        "gap-2",
+        "w-full",
+        "font-bold",
+        "border",
+        "border-slate-200",
+        "rounded",
+        "drop-shadow",
+        "hover:drop-shadow-md",
+        "hover:bg-slate-100/50",
+        "hover:scale-[1.02]",
+        "transition-all"
+      );
 
-      const titleDesc = document.createElement("td");
+      const titleDesc = document.createElement("div");
 
       const title = document.createElement("p");
       title.classList.add("text-lg", "font-bold");
@@ -106,26 +134,28 @@ export default function TodosUI(todos, todosContainer) {
 
       tableRow.appendChild(titleDesc);
 
-      const dueDate = document.createElement("td");
+      const dueDate = document.createElement("div");
+      dueDate.classList.add("flex", "items-center");
       dueDate.innerText = formatDueDate(todo.dueDate);
       tableRow.appendChild(dueDate);
 
-      const priority = document.createElement("td");
+      const priority = document.createElement("div");
       priority.innerHTML = `<span>${todo.priority}</span>`;
       stylizePriority(todo.priority, priority);
+      priority.classList.add("flex", "items-center");
       tableRow.appendChild(priority);
 
-      const status = document.createElement("td");
-      status.innerText = todo.isFinished;
+      const status = document.createElement("div");
+      status.classList.add("flex", "items-center", "gap-14");
+      status.innerHTML = stylizeStatus(todo.isFinished);
+
+      const optionsContainer = document.createElement("div");
+      optionsContainer.innerHTML = `<button class="px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+      status.appendChild(optionsContainer);
+
       tableRow.appendChild(status);
 
-      const optionsContainer = document.createElement("td");
-      optionsContainer.innerHTML = `<button class="px-4 py-2 font-bold border rounded hover:bg-slate-300 transition-all"><i class="fa-solid fa-pen-to-square"></i></button><button class="px-4 py-2 font-bold border rounded hover:bg-slate-300 transition-all"><i class="fa-solid fa-trash-can"></i></button>`;
-      tableRow.appendChild(optionsContainer);
-
-      tableBody.appendChild(tableRow);
-
-      todosContainer.appendChild(tableBody);
+      todosContainer.appendChild(tableRow);
     }
   } else {
     todosContainer.innerText = "No to-dos yet!";

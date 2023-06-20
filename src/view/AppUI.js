@@ -9,13 +9,17 @@ function createNewTodo(project) {
     : choice === 1 ? 'Medium'
     : 'Low'
   }
+  let statusRand = () => {
+    let choice = (Math.floor(Math.random() * 2));
+    return (choice === 0) ? true : false;
+  }
   PubSub.publish("new_todo", [
     project,
     "Test todo",
     "This is just a test",
     new Date("04/23/2022"),
     priorityRand(),
-    false,
+    statusRand(),
   ]);
 }
 
