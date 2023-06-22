@@ -36,17 +36,22 @@ function stylizeStatus(status) {
   if (status) {
     return `<div class="text-center w-12"><i class="fa-regular fa-circle-check text-3xl"></i></div>`;
   } else {
-    return`<div class="text-center w-12"><i class="fa-regular fa-circle text-3xl"></i></div>`;
+    return `<div class="text-center w-12"><i class="fa-regular fa-circle text-3xl"></i></div>`;
   }
 }
 
 function formatDueDate(dueDate) {
+  if (isNaN(dueDate.getMonth())) {
+    return "__/__/____";
+  }
   const month =
     dueDate.getMonth() < 10
       ? `0${dueDate.getMonth() + 1}`
       : dueDate.getMonth() + 1;
   const day =
-    dueDate.getDate() < 10 ? `0${dueDate.getDate()}` : dueDate.getDate();
+    dueDate.getDate() < 10
+      ? `0${dueDate.getDate() + 1}`
+      : dueDate.getDate() + 1;
   const year = dueDate.getFullYear();
 
   const formattedDueDate = `${month}/${day}/${year}`;
@@ -100,7 +105,7 @@ export default function TodosUI(todos, todosContainer) {
     for (let todo of todos) {
       const tableRow = document.createElement("div");
       tableRow.classList.add(
-        "group", 
+        "group",
         "cursor-pointer",
         "text-left",
         "grid",
@@ -128,7 +133,11 @@ export default function TodosUI(todos, todosContainer) {
       titleDesc.appendChild(title);
 
       const description = document.createElement("p");
-      description.classList.add("text-sm", "text-slate-500");
+      description.classList.add(
+        "text-sm",
+        "text-slate-500",
+        "line-clamp-2",
+      );
       description.innerText = todo.description;
       titleDesc.appendChild(description);
 
