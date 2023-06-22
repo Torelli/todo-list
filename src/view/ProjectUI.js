@@ -90,7 +90,6 @@ export default function ProjectUI() {
 
   const dialogNewTodo = document.createElement("dialog");
   dialogNewTodo.classList.add(
-    "overflow-scroll",
     "rounded-lg",
     "bg-white",
     "text-left",
