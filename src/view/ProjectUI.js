@@ -73,7 +73,7 @@ function populateDialog() {
 
 export default function ProjectUI() {
   const container = document.createElement("div");
-  container.classList.add("p-8", "text-slate-700");
+  container.classList.add("static", "p-8", "text-slate-700");
 
   const projectTitle = document.createElement("h2");
   projectTitle.classList.add("text-3xl", "font-bold");
@@ -127,6 +127,7 @@ export default function ProjectUI() {
 
   const todosContainer = document.createElement("div");
   todosContainer.classList.add(
+    "static",
     "mt-12",
     "flex",
     "flex-col",

@@ -20,6 +20,21 @@ export default function AppUI() {
 
     PubSub.subscribe("get_todos", () => {
       TodosUI(todos, todosContainer);
+      document.addEventListener("mouseup", (e) => {
+        const dialogs = document.querySelectorAll(".context");
+        for (let dialog of dialogs) {
+          const dialogDimensions =
+            dialog.getBoundingClientRect();
+          if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+          ) {
+            dialog.close();
+          }
+        }
+      });
     });
 
     btnAddTodo.addEventListener("click", (e) => {

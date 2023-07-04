@@ -34,9 +34,23 @@ function stylizePriority(priority, priorityContainer) {
 
 function stylizeStatus(status) {
   if (status) {
-    return `<div class="text-center w-12"><i class="fa-regular fa-circle-check text-3xl"></i></div>`;
+    return `<button class="text-center w-12">
+    <lord-icon
+        src="https://cdn.lordicon.com/egiwmiit.json"
+        trigger="click"
+        colors="primary:#121331"
+        state="morph-check-out">
+    </lord-icon></i>
+    </button>`;
   } else {
-    return `<div class="text-center w-12"><i class="fa-regular fa-circle text-3xl"></i></div>`;
+    return `<button class="text-center w-12">
+    <lord-icon
+      src="https://cdn.lordicon.com/egiwmiit.json"
+      trigger="click"
+      colors="primary:#121331"
+      state="morph-check-in">
+    </lord-icon></i>
+    </button>`;
   }
 }
 
@@ -101,12 +115,11 @@ export default function TodosUI(todos, todosContainer) {
     todosContainer.innerText = "";
 
     todosContainer.appendChild(createHeader());
-
+    let zIndex = 999;
     for (let todo of todos) {
       const tableRow = document.createElement("div");
       tableRow.classList.add(
-        "group",
-        "cursor-pointer",
+        "table-row",
         "text-left",
         "grid",
         "grid-cols-4",
@@ -121,9 +134,9 @@ export default function TodosUI(todos, todosContainer) {
         "drop-shadow",
         "hover:drop-shadow-md",
         "hover:bg-slate-100/50",
-        "hover:scale-[1.02]",
         "transition-all"
       );
+      tableRow.style.zIndex = zIndex;
 
       const titleDesc = document.createElement("div");
 
@@ -133,11 +146,7 @@ export default function TodosUI(todos, todosContainer) {
       titleDesc.appendChild(title);
 
       const description = document.createElement("p");
-      description.classList.add(
-        "text-sm",
-        "text-slate-500",
-        "line-clamp-2",
-      );
+      description.classList.add("text-sm", "text-slate-500", "line-clamp-2");
       description.innerText = todo.description;
       titleDesc.appendChild(description);
 
@@ -159,12 +168,30 @@ export default function TodosUI(todos, todosContainer) {
       status.innerHTML = stylizeStatus(todo.isFinished);
 
       const optionsContainer = document.createElement("div");
-      optionsContainer.innerHTML = `<button class="px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+      optionsContainer.classList.add("relative");
+      optionsContainer.innerHTML = `<button onclick="${todo.title.trim()}OptionsDialog.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+
+      const optionsDialog = document.createElement("dialog");
+      optionsDialog.setAttribute("id", `${todo.title.trim()}OptionsDialog`);
+      optionsDialog.classList.add(
+        "context",
+        "hidden",
+        "open:block",
+        "absolute",
+        "top-4",
+        "left-6",
+        "p-0"
+      );
+      optionsDialog.innerHTML = `<div class="bg-white flex flex-col"><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-eye text-slate-600"></i>View</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-pen-to-square text-slate-600"></i>Edit</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-trash-can text-slate-600"></i>Delete</button></div>`;
+      optionsContainer.appendChild(optionsDialog);
+
       status.appendChild(optionsContainer);
 
       tableRow.appendChild(status);
 
       todosContainer.appendChild(tableRow);
+
+      zIndex--;
     }
   } else {
     todosContainer.innerText = "No to-dos yet!";
