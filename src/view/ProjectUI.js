@@ -10,7 +10,7 @@ function populateDialog() {
                     To do</h3>
                 </div>
               </div>
-              <button onClick="dialogNewTodo.close()" type="button" id="btn-close-dialog">
+              <button type="button" id="btn-close-dialog">
               <i class="fa-regular fa-circle-xmark text-slate-400 text-xl"></i>
               </button>
             </div>
