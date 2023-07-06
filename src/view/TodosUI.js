@@ -169,10 +169,10 @@ export default function TodosUI(todos, todosContainer) {
 
       const optionsContainer = document.createElement("div");
       optionsContainer.classList.add("relative");
-      optionsContainer.innerHTML = `<button onclick="${todo.title.trim()}OptionsDialog.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+      optionsContainer.innerHTML = `<button onclick="${todo.id}OptionsDialog.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
 
       const optionsDialog = document.createElement("dialog");
-      optionsDialog.setAttribute("id", `${todo.title.trim()}OptionsDialog`);
+      optionsDialog.setAttribute("id", `${todo.id}OptionsDialog`);
       optionsDialog.classList.add(
         "context",
         "hidden",

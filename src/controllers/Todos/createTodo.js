@@ -10,6 +10,6 @@ export default function createTodo(
   isFinished
 ) {
   project.todos.push(
-    toDosFactory(title, description, dueDate, priority, isFinished)
+    toDosFactory(project.todos.length, title, description, dueDate, priority, isFinished)
   );
 }
