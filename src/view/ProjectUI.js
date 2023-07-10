@@ -71,9 +71,46 @@ function populateDialog() {
   return dialogWithin;
 }
 
+function populateTodoViewSidebar() {
+  const todoViewSidebarWithin = `<div class="bg-slate-100 px-4 py-3 flex justify-between sm:px-6">
+                  <div class="flex items-center sm:justify-around sm:gap-1">
+                    <div class="text-center sm:mt-0 sm:text-left">
+                      <h3 class="font-semibold leading-6" id="sidebar-title">To do title</h3>
+                    </div>
+                  </div>
+                  <button type="button" id="btn-close-sidebar">
+                  <i class="fa-regular fa-circle-xmark text-slate-400 text-xl"></i>
+                  </button>
+                </div>
+                <div class="px-4 py-3">
+                  <p id="sidebar-description" class="text-slate-500">Description goes here</p>
+                </div>`;
+
+  return todoViewSidebarWithin;
+}
+
 export default function ProjectUI() {
   const container = document.createElement("div");
   container.classList.add("static", "p-8", "text-slate-700");
+
+  const todoViewSidebar = document.createElement("div");
+  todoViewSidebar.classList.add(
+    "translate-x-full",
+    "fixed",
+    "right-0",
+    "top-0",
+    "z-[1000]",
+    "border-2",
+    "bg-white",
+    "w-1/4",
+    "h-screen",
+    "overflow-auto",
+    "p-0",
+    "transition-all"
+  );
+  todoViewSidebar.setAttribute("id", "todo-sidebar");
+  todoViewSidebar.innerHTML = populateTodoViewSidebar();
+  container.appendChild(todoViewSidebar);
 
   const projectTitle = document.createElement("h2");
   projectTitle.classList.add("text-3xl", "font-bold");

@@ -146,7 +146,7 @@ export default function TodosUI(todos, todosContainer) {
       titleDesc.appendChild(title);
 
       const description = document.createElement("p");
-      description.classList.add("text-sm", "text-slate-500", "line-clamp-2");
+      description.classList.add("text-sm", "text-slate-500", "line-clamp-1");
       description.innerText = todo.description;
       titleDesc.appendChild(description);
 
@@ -182,7 +182,7 @@ export default function TodosUI(todos, todosContainer) {
         "left-6",
         "p-0"
       );
-      optionsDialog.innerHTML = `<div class="bg-white flex flex-col"><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-eye text-slate-600"></i>View</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-pen-to-square text-slate-600"></i>Edit</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-trash-can text-slate-600"></i>Delete</button></div>`;
+      optionsDialog.innerHTML = `<div class="bg-white flex flex-col"><button data-id="${todo.id}" class="context-view px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-eye text-slate-600"></i>View</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-pen-to-square text-slate-600"></i>Edit</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-trash-can text-slate-600"></i>Delete</button></div>`;
       optionsContainer.appendChild(optionsDialog);
 
       status.appendChild(optionsContainer);

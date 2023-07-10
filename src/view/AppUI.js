@@ -31,6 +31,22 @@ function closeDialog() {
   );
 }
 
+function openSidebar(todo) {
+  const sidebar = document.querySelector("#todo-sidebar");
+  const sidebarTitle = document.querySelector("#sidebar-title");
+  const sidebarDescription = document.querySelector("#sidebar-description");
+
+  sidebarTitle.innerText = todo.title;
+  sidebarDescription.innerText = todo.description;
+
+  sidebar.classList.remove("translate-x-full");
+}
+
+function closeSidebar(e) {
+  const sidebar = document.querySelector("#todo-sidebar");
+  sidebar.classList.add("translate-x-full");
+}
+
 function addTodo(e, project) {
   const title = document.querySelector("#title").value;
   const desc = document.querySelector("#description").value;
@@ -62,6 +78,7 @@ export default function AppUI() {
   const btnCloseDialog = document.querySelector("#btn-close-dialog");
   const btnCancelDialog = document.querySelector("#btn-cancel");
   const btnAddTodo = document.querySelector("#btn-add");
+  const btnCloseSidebar = document.querySelector("#btn-close-sidebar");
 
   PubSub.subscribe("get_project", (msg, project) => {
     const todos = project.todos;
@@ -73,9 +90,18 @@ export default function AppUI() {
       TodosUI(todos, todosContainer);
       document.removeEventListener("mouseup", closeContextMenu);
       document.addEventListener("mouseup", closeContextMenu);
+
+      const btnsViewTodo = document.querySelectorAll(".context-view");
+      for (let button of btnsViewTodo) {
+        const todo = todos[button.getAttribute("data-id")];
+        button.removeEventListener("click", () => openSidebar(todo));
+        button.addEventListener("click", () => openSidebar(todo));
+      }
     });
 
     btnAddTodo.addEventListener("click", (e) => addTodo(e, project));
+
+    btnCloseSidebar.addEventListener("click", closeSidebar);
 
     btnCloseDialog.addEventListener("click", closeDialog);
     btnCancelDialog.addEventListener("click", closeDialog);
