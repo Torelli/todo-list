@@ -37,7 +37,8 @@ function openSidebar(todo) {
   const sidebarDescription = document.querySelector("#sidebar-description");
 
   sidebarTitle.innerText = todo.title;
-  sidebarDescription.innerText = todo.description;
+  sidebarDescription.innerText = "This to do has no description";
+  if (todo.description != "") sidebarDescription.innerText = todo.description;
 
   sidebar.classList.remove("translate-x-full");
 }
