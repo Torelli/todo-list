@@ -75,7 +75,7 @@ function populateTodoViewSidebar() {
   const todoViewSidebarWithin = `<div class="bg-slate-100 px-4 py-3 flex justify-between sm:px-6">
                   <div class="flex items-center sm:justify-around sm:gap-1">
                     <div class="text-center sm:mt-0 sm:text-left">
-                      <h3 class="font-semibold leading-6" id="sidebar-title">To do title</h3>
+                      <h3 class="font-semibold leading-6" id="sidebar-title"></h3>
                     </div>
                   </div>
                   <button type="button" id="btn-close-sidebar">
@@ -83,7 +83,7 @@ function populateTodoViewSidebar() {
                   </button>
                 </div>
                 <div class="px-4 py-3">
-                  <p id="sidebar-description" class="text-slate-500">Description goes here</p>
+                  <p id="sidebar-description" class="text-slate-500"></p>
                 </div>`;
 
   return todoViewSidebarWithin;
