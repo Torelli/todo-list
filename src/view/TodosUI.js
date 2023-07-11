@@ -1,3 +1,13 @@
+function populatePriority(todo, priorityContainer) {
+  priorityContainer.innerHTML = `<span>${todo.priority}</span>
+                                <select
+                                  class="hidden w-24 p-1 rounded bg-white border border-slate-400 focus-visible:outline-0 focus-visible:border-slate-700 focus-visible:placeholder:invisible peer"
+                                  name="updatePriorityTodo${todo.id}" id="updatePriorityTodo${todo.id}" required>
+                                  <option value="High">High</option>
+                                  <option value="Medium">Medium</option>
+                                  <option value="Low">Low</option>
+                                </select>`;
+}
 function stylizePriority(priority, priorityContainer) {
   if (priority === "High") {
     priorityContainer.children[0].classList.add(
@@ -9,6 +19,7 @@ function stylizePriority(priority, priorityContainer) {
       "font-bold",
       "text-sm"
     );
+    priorityContainer.children[1].value = "High";
   } else if (priority === "Medium") {
     priorityContainer.children[0].classList.add(
       "rounded-full",
@@ -19,6 +30,7 @@ function stylizePriority(priority, priorityContainer) {
       "font-bold",
       "text-sm"
     );
+    priorityContainer.children[1].value = "Medium";
   } else {
     priorityContainer.children[0].classList.add(
       "rounded-full",
@@ -29,6 +41,7 @@ function stylizePriority(priority, priorityContainer) {
       "font-bold",
       "text-sm"
     );
+    priorityContainer.children[1].value = "Low";
   }
 }
 
@@ -54,9 +67,13 @@ function stylizeStatus(status) {
   }
 }
 
+function stylizeDescription(description, descriptionContainer) {
+  if (description == "") descriptionContainer.classList.add("disabled:hidden");
+}
+
 function formatDueDate(dueDate) {
   if (isNaN(dueDate.getMonth())) {
-    return "__/__/____";
+    return "";
   }
   const month =
     dueDate.getMonth() < 10
@@ -68,7 +85,7 @@ function formatDueDate(dueDate) {
       : dueDate.getDate() + 1;
   const year = dueDate.getFullYear();
 
-  const formattedDueDate = `${month}/${day}/${year}`;
+  const formattedDueDate = `${year}-${month}-${day}`;
 
   return formattedDueDate;
 }
@@ -139,26 +156,49 @@ export default function TodosUI(todos, todosContainer) {
       tableRow.style.zIndex = zIndex;
 
       const titleDesc = document.createElement("div");
+      titleDesc.classList.add("flex", "flex-col", "justify-center");
 
-      const title = document.createElement("p");
-      title.classList.add("text-lg", "font-bold");
-      title.innerText = todo.title;
+      const title = document.createElement("input");
+      title.setAttribute("type", "text");
+      title.disabled = true;
+      title.classList.add(
+        "pl-1",
+        "text-lg",
+        "font-bold",
+        "disabled:bg-transparent",
+        "disabled:pl-0"
+      );
+      title.value = todo.title;
       titleDesc.appendChild(title);
 
-      const description = document.createElement("p");
-      description.classList.add("text-sm", "text-slate-500", "line-clamp-1");
-      description.innerText = todo.description;
+      const description = document.createElement("textarea");
+      description.classList.add(
+        "pl-1",
+        "pb-2",
+        "text-sm",
+        "text-slate-500",
+        "disabled:bg-transparent",
+        "disabled:p-0",
+        "disabled:h-5",
+        "disabled:resize-none",
+        "disabled:line-clamp-1"
+      );
+      description.disabled = true;
+      description.value = todo.description;
+      stylizeDescription(todo.description, description);
       titleDesc.appendChild(description);
 
       tableRow.appendChild(titleDesc);
 
-      const dueDate = document.createElement("div");
-      dueDate.classList.add("flex", "items-center");
-      dueDate.innerText = formatDueDate(todo.dueDate);
+      const dueDate = document.createElement("input");
+      dueDate.setAttribute("type", "date");
+      dueDate.disabled = true;
+      dueDate.classList.add("w-32", "disabled:bg-transparent");
+      dueDate.value = formatDueDate(todo.dueDate);
       tableRow.appendChild(dueDate);
 
       const priority = document.createElement("div");
-      priority.innerHTML = `<span>${todo.priority}</span>`;
+      populatePriority(todo, priority);
       stylizePriority(todo.priority, priority);
       priority.classList.add("flex", "items-center");
       tableRow.appendChild(priority);
