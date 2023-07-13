@@ -1,8 +1,8 @@
 function populatePriority(todo, priorityContainer) {
-  priorityContainer.innerHTML = `<span>${todo.priority}</span>
+  priorityContainer.innerHTML = `<span id="priority-badge-${todo.id}">${todo.priority}</span>
                                 <select
                                   class="hidden w-24 p-1 rounded bg-white border border-slate-400 focus-visible:outline-0 focus-visible:border-slate-700 focus-visible:placeholder:invisible peer"
-                                  name="updatePriorityTodo${todo.id}" id="updatePriorityTodo${todo.id}" required>
+                                  name="priority-input-${todo.id}" id="priority-input-${todo.id}" required>
                                   <option value="High">High</option>
                                   <option value="Medium">Medium</option>
                                   <option value="Low">Low</option>
@@ -135,6 +135,7 @@ export default function TodosUI(todos, todosContainer) {
     let zIndex = 999;
     for (let todo of todos) {
       const tableRow = document.createElement("div");
+      tableRow.setAttribute("id", `todo-row-${todo.id}`);
       tableRow.classList.add(
         "table-row",
         "text-left",
@@ -160,11 +161,18 @@ export default function TodosUI(todos, todosContainer) {
 
       const title = document.createElement("input");
       title.setAttribute("type", "text");
+      title.setAttribute("id", `title-input-${todo.id}`);
+      title.required = true;
       title.disabled = true;
       title.classList.add(
+        "rounded",
+        "border",
+        "border-slate-400",
+        "w-52",
         "pl-1",
         "text-lg",
         "font-bold",
+        "disabled:border-0",
         "disabled:bg-transparent",
         "disabled:pl-0"
       );
@@ -172,11 +180,21 @@ export default function TodosUI(todos, todosContainer) {
       titleDesc.appendChild(title);
 
       const description = document.createElement("textarea");
+      description.setAttribute("id", `desc-input-${todo.id}`);
       description.classList.add(
+        "w-52",
         "pl-1",
         "pb-2",
+        "mt-2",
+        "rounded",
+        "border",
+        "border-slate-400",
+        "resize",
         "text-sm",
         "text-slate-500",
+        "disabled:mt-0",
+        "disabled:border-0",
+        "disabled:w-full",
         "disabled:bg-transparent",
         "disabled:p-0",
         "disabled:h-5",
@@ -191,9 +209,21 @@ export default function TodosUI(todos, todosContainer) {
       tableRow.appendChild(titleDesc);
 
       const dueDate = document.createElement("input");
+      dueDate.setAttribute("id", `date-input-${todo.id}`);
       dueDate.setAttribute("type", "date");
       dueDate.disabled = true;
-      dueDate.classList.add("w-32", "disabled:bg-transparent");
+      dueDate.classList.add(
+        "p-1",
+        "h-8",
+        "w-36",
+        "rounded",
+        "border",
+        "border-slate-400",
+        "self-center",
+        "disabled:border-0",
+        "disabled:p-0",
+        "disabled:bg-transparent"
+      );
       dueDate.value = formatDueDate(todo.dueDate);
       tableRow.appendChild(dueDate);
 
@@ -208,8 +238,8 @@ export default function TodosUI(todos, todosContainer) {
       status.innerHTML = stylizeStatus(todo.isFinished);
 
       const optionsContainer = document.createElement("div");
-      optionsContainer.classList.add("relative");
-      optionsContainer.innerHTML = `<button onclick="optionsDialog${todo.id}.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+      optionsContainer.classList.add("relative", "flex", "gap-4");
+      optionsContainer.innerHTML = `<button class="hidden" id="btn-save-${todo.id}"><i class="fa-regular fa-floppy-disk fa-xl"></i></button><button id="btn-cancel-${todo.id}" class="hidden"><i class="fa-solid fa-xmark fa-xl"></i></button><button id="btn-options-${todo.id}" onclick="optionsDialog${todo.id}.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
 
       const optionsDialog = document.createElement("dialog");
       optionsDialog.setAttribute("id", `optionsDialog${todo.id}`);
@@ -222,7 +252,7 @@ export default function TodosUI(todos, todosContainer) {
         "left-6",
         "p-0"
       );
-      optionsDialog.innerHTML = `<div class="bg-white flex flex-col"><button data-id="${todo.id}" class="context-view px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-eye text-slate-600"></i>View</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-pen-to-square text-slate-600"></i>Edit</button><button class="px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-trash-can text-slate-600"></i>Delete</button></div>`;
+      optionsDialog.innerHTML = `<div data-id="${todo.id}" class="bg-white flex flex-col"><button class="context-view px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-eye text-slate-600"></i>View</button><button class="context-edit px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-pen-to-square text-slate-600"></i>Edit</button><button class="context-delete px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-trash-can text-slate-600"></i>Delete</button></div>`;
       optionsContainer.appendChild(optionsDialog);
 
       status.appendChild(optionsContainer);

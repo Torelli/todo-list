@@ -48,6 +48,36 @@ function closeSidebar(e) {
   sidebar.classList.add("translate-x-full");
 }
 
+function openEditInputs(id) {
+  const container = document.querySelector(`#todo-row-${id}`);
+  const btnOptions = document.querySelector(`#btn-options-${id}`);
+  const btnSave = document.querySelector(`#btn-save-${id}`);
+  const btnCancel = document.querySelector(`#btn-cancel-${id}`);
+  const title = document.querySelector(`#title-input-${id}`);
+  const description = document.querySelector(`#desc-input-${id}`);
+  const date = document.querySelector(`#date-input-${id}`);
+  const priority = document.querySelector(`#priority-input-${id}`);
+  const priorityBadge = document.querySelector(`#priority-badge-${id}`);
+
+  container.classList.add("bg-slate-200");
+  container.classList.remove("hover:bg-slate-100/50");
+
+  btnOptions.classList.add("hidden");
+  btnSave.classList.remove("hidden");
+  btnCancel.classList.remove("hidden");
+
+  title.disabled = false;
+  title.setAttribute("placeholder", "Title");
+
+  description.disabled = false;
+  description.setAttribute("placeholder", "Description");
+
+  date.disabled = false;
+
+  priority.classList.remove("hidden");
+  priorityBadge.classList.add("hidden");
+}
+
 function addTodo(e, project) {
   const title = document.querySelector("#title").value;
   const desc = document.querySelector("#description").value;
@@ -85,7 +115,6 @@ export default function AppUI() {
     const todos = project.todos;
     projectTitle.innerText = project.title;
     projectDescription.innerText = project.description;
-    TodosUI(todos, todosContainer);
 
     PubSub.subscribe("get_todos", () => {
       TodosUI(todos, todosContainer);
@@ -94,9 +123,15 @@ export default function AppUI() {
 
       const btnsViewTodo = document.querySelectorAll(".context-view");
       for (let button of btnsViewTodo) {
-        const todo = todos[button.getAttribute("data-id")];
+        const todo = todos[button.parentNode.getAttribute("data-id")];
         button.removeEventListener("click", () => openSidebar(todo));
         button.addEventListener("click", () => openSidebar(todo));
+      }
+
+      const btnsEditTodo = document.querySelectorAll(".context-edit");
+      for (let button of btnsEditTodo) {
+        const id = button.parentNode.getAttribute("data-id");
+        button.addEventListener("click", () => openEditInputs(id));
       }
     });
 
