@@ -1,6 +1,6 @@
 import PubSub from "pubsub-js";
 import ProjectUI from "./ProjectUI";
-import TodosUI from "./TodosUI";
+import TodosUI, { formatDueDate } from "./TodosUI";
 
 function closeContextMenu(e) {
   const dialogs = document.querySelectorAll(".context");
@@ -81,6 +81,37 @@ function openEditInputs(id) {
   priorityBadge.classList.add("hidden");
 }
 
+function closeEditInputs(id, todo) {
+  const container = document.querySelector(`#todo-row-${id}`);
+  const btnOptions = document.querySelector(`#btn-options-${id}`);
+  const btnSave = document.querySelector(`#btn-save-${id}`);
+  const btnCancel = document.querySelector(`#btn-cancel-${id}`);
+  const title = document.querySelector(`#title-input-${id}`);
+  const description = document.querySelector(`#desc-input-${id}`);
+  const date = document.querySelector(`#date-input-${id}`);
+  const priority = document.querySelector(`#priority-input-${id}`);
+  const priorityBadge = document.querySelector(`#priority-badge-${id}`);
+
+  container.classList.remove("bg-slate-200");
+  container.classList.add("hover:bg-slate-100/50");
+
+  btnOptions.classList.remove("hidden");
+  btnSave.classList.add("hidden");
+  btnCancel.classList.add("hidden");
+
+  title.disabled = true;
+  title.value = todo.title;
+
+  description.disabled = true;
+  description.value = todo.description;
+
+  date.disabled = true;
+  date.value = formatDueDate(todo.dueDate);
+
+  priority.classList.add("hidden");
+  priorityBadge.classList.remove("hidden");
+}
+
 function addTodo(e, project) {
   const title = document.querySelector("#title").value;
   const desc = document.querySelector("#description").value;
@@ -126,15 +157,25 @@ export default function AppUI() {
 
       const btnsViewTodo = document.querySelectorAll(".context-view");
       for (let button of btnsViewTodo) {
-        const todo = todos[button.parentNode.getAttribute("data-id")];
+        const todo =
+          todos[
+            button.parentNode.parentNode.parentNode.getAttribute("data-id")
+          ];
         button.removeEventListener("click", () => openSidebar(todo));
         button.addEventListener("click", () => openSidebar(todo));
       }
 
       const btnsEditTodo = document.querySelectorAll(".context-edit");
       for (let button of btnsEditTodo) {
-        const id = button.parentNode.getAttribute("data-id");
+        const id =
+          button.parentNode.parentNode.parentNode.getAttribute("data-id");
         button.addEventListener("click", () => openEditInputs(id));
+      }
+
+      const btnsCancelEdit = document.querySelectorAll(".btn-cancel-edit");
+      for (let button of btnsCancelEdit) {
+        const id = button.parentNode.parentNode.getAttribute("data-id");
+        button.addEventListener("click", () => closeEditInputs(id, todos[id]));
       }
     });
 
