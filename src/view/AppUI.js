@@ -49,6 +49,7 @@ function closeSidebar(e) {
 }
 
 function openEditInputs(id) {
+  const dialog = document.querySelector(`#optionsDialog${id}`);
   const container = document.querySelector(`#todo-row-${id}`);
   const btnOptions = document.querySelector(`#btn-options-${id}`);
   const btnSave = document.querySelector(`#btn-save-${id}`);
@@ -58,6 +59,8 @@ function openEditInputs(id) {
   const date = document.querySelector(`#date-input-${id}`);
   const priority = document.querySelector(`#priority-input-${id}`);
   const priorityBadge = document.querySelector(`#priority-badge-${id}`);
+
+  dialog.close();
 
   container.classList.add("bg-slate-200");
   container.classList.remove("hover:bg-slate-100/50");

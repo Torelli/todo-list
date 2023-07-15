@@ -126,6 +126,32 @@ function createHeader() {
   return tableHeaders;
 }
 
+function populateOptionsContainer(id) {
+  return `<div class="group relative">
+    <button id="btn-save-${id}" class="hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all">
+      <i class="fa-regular fa-floppy-disk fa-xl"></i>
+    </button>
+    <div class="opacity-0 -translate-y-1 whitespace-nowrap bg-gray-900 text-white text-center text-base rounded-lg py-2 absolute z-10 group-hover:translate-y-0 group-hover:opacity-100 top-12 -left-12 px-3 pointer-events-none transition-all">
+      Save changes
+      <svg class="absolute text-gray-900 h-2 left-16 bottom-10 rotate-180" x="0px" y="0px" viewBox="0 0 255 255" xml:space="preserve">
+        <polygon class="fill-current" points="0,0 127.5,127.5 255,0" />
+      </svg>
+    </div>
+  </div>
+  <div class="group relative">
+    <button id="btn-cancel-${id}" class="hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all">
+      <i class="fa-solid fa-xmark fa-xl"></i>
+    </button>
+    <div class="opacity-0 -translate-y-1 whitespace-nowrap bg-gray-900 text-white text-center text-base rounded-lg py-2 absolute z-10 group-hover:translate-y-0 group-hover:opacity-100 top-12 -left-5 px-3 pointer-events-none transition-all">
+      Cancel
+      <svg class="absolute text-gray-900 h-2 left-9 bottom-10 rotate-180" x="0px" y="0px" viewBox="0 0 255 255" xml:space="preserve">
+        <polygon class="fill-current" points="0,0 127.5,127.5 255,0" />
+      </svg>
+    </div>
+  </div>
+  <button id="btn-options-${id}" onclick="optionsDialog${id}.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+}
+
 export default function TodosUI(todos, todosContainer) {
   if (todos.length !== 0) {
     todosContainer.classList.add("w-full");
@@ -238,8 +264,13 @@ export default function TodosUI(todos, todosContainer) {
       status.innerHTML = stylizeStatus(todo.isFinished);
 
       const optionsContainer = document.createElement("div");
-      optionsContainer.classList.add("relative", "flex", "flex-row-reverse" ,"gap-2");
-      optionsContainer.innerHTML = `<button id="btn-save-${todo.id}" class="hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all"><i class="fa-regular fa-floppy-disk fa-xl"></i></button><button id="btn-cancel-${todo.id}" class="hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all"><i class="fa-solid fa-xmark fa-xl"></i></button><button id="btn-options-${todo.id}" onclick="optionsDialog${todo.id}.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+      optionsContainer.classList.add(
+        "relative",
+        "flex",
+        "flex-row-reverse",
+        "gap-2"
+      );
+      optionsContainer.innerHTML = populateOptionsContainer(todo.id);
 
       const optionsDialog = document.createElement("dialog");
       optionsDialog.setAttribute("id", `optionsDialog${todo.id}`);
