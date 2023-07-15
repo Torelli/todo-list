@@ -1,8 +1,6 @@
-import PubSub from "pubsub-js";
-
 const projectsFactory = (title, description, dueDate, todos = []) => {
   function getProject() {
-    PubSub.publish("get_project", this);
+    return this;
   }
 
   return { title, description, dueDate, todos, getProject };

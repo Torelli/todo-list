@@ -50,7 +50,7 @@ function closeSidebar(e) {
 
 function openEditInputs(id) {
   const dialog = document.querySelector(`#optionsDialog${id}`);
-  const container = document.querySelector(`#todo-row-${id}`);
+  const container = document.querySelector(`#todo-form-${id}`);
   const btnOptions = document.querySelector(`#btn-options-${id}`);
   const btnSave = document.querySelector(`#btn-save-${id}`);
   const btnCancel = document.querySelector(`#btn-cancel-${id}`);
@@ -82,7 +82,7 @@ function openEditInputs(id) {
 }
 
 function closeEditInputs(id, todo) {
-  const container = document.querySelector(`#todo-row-${id}`);
+  const container = document.querySelector(`#todo-form-${id}`);
   const btnOptions = document.querySelector(`#btn-options-${id}`);
   const btnSave = document.querySelector(`#btn-save-${id}`);
   const btnCancel = document.querySelector(`#btn-cancel-${id}`);
@@ -117,7 +117,7 @@ function addTodo(e, project) {
   const desc = document.querySelector("#description").value;
   const dueDate = document.querySelector("#due-date").value;
   const priority = document.querySelector("#priority").value;
-  if (title !== "") {
+  if (title != "") {
     closeDialog();
     e.preventDefault();
     PubSub.publish("new_todo", [
@@ -132,6 +132,18 @@ function addTodo(e, project) {
     document.querySelector("#description").value = "";
     document.querySelector("#due-date").value = "";
     document.querySelector("#priority").value = "High";
+  }
+}
+
+function updateTodo(e, id, todo) {
+  const title = document.querySelector(`#title-input-${id}`).value;
+  const description = document.querySelector(`#desc-input-${id}`).value;
+  const date = document.querySelector(`#date-input-${id}`).value;
+  const priority = document.querySelector(`#priority-input-${id}`).value;
+
+  if (title != "") {
+    e.preventDefault();
+    PubSub.publish("update_todo", [todo, title, description, new Date(date), priority]);
   }
 }
 
@@ -176,6 +188,12 @@ export default function AppUI() {
       for (let button of btnsCancelEdit) {
         const id = button.parentNode.parentNode.getAttribute("data-id");
         button.addEventListener("click", () => closeEditInputs(id, todos[id]));
+      }
+
+      const btnsSaveEdit = document.querySelectorAll(".btn-save-edit");
+      for (let button of btnsSaveEdit) {
+        const id = button.parentNode.parentNode.getAttribute("data-id");
+        button.addEventListener("click", (e) => updateTodo(e, id, todos[id]));
       }
     });
 

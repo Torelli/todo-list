@@ -128,7 +128,7 @@ function createHeader() {
 
 function populateOptionsContainer(id) {
   return `<div class="group relative">
-    <button id="btn-save-${id}" class="hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all">
+    <button type="submit" id="btn-save-${id}" class="btn-save-edit hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all">
       <i class="fa-regular fa-floppy-disk fa-xl"></i>
     </button>
     <div class="opacity-0 -translate-y-1 whitespace-nowrap bg-gray-900 text-white text-center text-base rounded-lg py-2 absolute z-10 group-hover:translate-y-0 group-hover:opacity-100 top-12 -left-12 px-3 pointer-events-none transition-all">
@@ -139,7 +139,7 @@ function populateOptionsContainer(id) {
     </div>
   </div>
   <div class="group relative">
-    <button id="btn-cancel-${id}" class="btn-cancel-edit hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all">
+    <button type="button" id="btn-cancel-${id}" class="btn-cancel-edit hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all">
       <i class="fa-solid fa-xmark fa-xl"></i>
     </button>
     <div class="opacity-0 -translate-y-1 whitespace-nowrap bg-gray-900 text-white text-center text-base rounded-lg py-2 absolute z-10 group-hover:translate-y-0 group-hover:opacity-100 top-12 -left-5 px-3 pointer-events-none transition-all">
@@ -149,7 +149,7 @@ function populateOptionsContainer(id) {
       </svg>
     </div>
   </div>
-  <button id="btn-options-${id}" onclick="optionsDialog${id}.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
+  <button type="button" id="btn-options-${id}" onclick="optionsDialog${id}.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
 }
 
 export default function TodosUI(todos, todosContainer) {
@@ -160,8 +160,8 @@ export default function TodosUI(todos, todosContainer) {
     todosContainer.appendChild(createHeader());
     let zIndex = 999;
     for (let todo of todos) {
-      const tableRow = document.createElement("div");
-      tableRow.setAttribute("id", `todo-row-${todo.id}`);
+      const tableRow = document.createElement("form");
+      tableRow.setAttribute("id", `todo-form-${todo.id}`);
       tableRow.classList.add(
         "table-row",
         "text-left",
@@ -284,7 +284,7 @@ export default function TodosUI(todos, todosContainer) {
         "left-6",
         "p-0"
       );
-      optionsDialog.innerHTML = `<div class="bg-white flex flex-col"><button class="context-view px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-eye text-slate-600"></i>View</button><button class="context-edit px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-pen-to-square text-slate-600"></i>Edit</button><button class="context-delete px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-trash-can text-slate-600"></i>Delete</button></div>`;
+      optionsDialog.innerHTML = `<div class="bg-white flex flex-col"><button type="button" class="context-view px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-eye text-slate-600"></i>View</button><button type="button" class="context-edit px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-pen-to-square text-slate-600"></i>Edit</button><button type="button" class="context-delete px-4 py-1 text-sm font-normal hover:bg-slate-300 flex gap-1 items-center"><i class="fa-regular fa-trash-can text-slate-600"></i>Delete</button></div>`;
       optionsContainer.appendChild(optionsDialog);
 
       status.appendChild(optionsContainer);
