@@ -238,7 +238,7 @@ export default function TodosUI(todos, todosContainer) {
       status.innerHTML = stylizeStatus(todo.isFinished);
 
       const optionsContainer = document.createElement("div");
-      optionsContainer.classList.add("relative", "flex", "gap-2");
+      optionsContainer.classList.add("relative", "flex", "flex-row-reverse" ,"gap-2");
       optionsContainer.innerHTML = `<button id="btn-save-${todo.id}" class="hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all"><i class="fa-regular fa-floppy-disk fa-xl"></i></button><button id="btn-cancel-${todo.id}" class="hidden px-2 py-1 bg-white border border-slate-400 rounded hover:text-slate-900 hover:bg-slate-200 hover:drop-shadow transition-all"><i class="fa-solid fa-xmark fa-xl"></i></button><button id="btn-options-${todo.id}" onclick="optionsDialog${todo.id}.show()" class="optionsButton px-4 font-bold text-slate-500 hover:text-slate-900 transition-all"><i class="fa-solid fa-ellipsis-vertical"></i></button>`;
 
       const optionsDialog = document.createElement("dialog");
