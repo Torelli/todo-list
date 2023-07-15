@@ -162,8 +162,9 @@ export default function TodosUI(todos, todosContainer) {
     for (let todo of todos) {
       const tableRow = document.createElement("form");
       tableRow.setAttribute("id", `todo-form-${todo.id}`);
+      tableRow.setAttribute("data-id", `${todo.id}`);
       tableRow.classList.add(
-        "table-row",
+        "todo-form",
         "text-left",
         "grid",
         "grid-cols-4",

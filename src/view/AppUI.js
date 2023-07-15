@@ -143,7 +143,13 @@ function updateTodo(e, id, todo) {
 
   if (title != "") {
     e.preventDefault();
-    PubSub.publish("update_todo", [todo, title, description, new Date(date), priority]);
+    PubSub.publish("update_todo", [
+      todo,
+      title,
+      description,
+      new Date(date),
+      priority,
+    ]);
   }
 }
 
@@ -190,10 +196,10 @@ export default function AppUI() {
         button.addEventListener("click", () => closeEditInputs(id, todos[id]));
       }
 
-      const btnsSaveEdit = document.querySelectorAll(".btn-save-edit");
-      for (let button of btnsSaveEdit) {
-        const id = button.parentNode.parentNode.getAttribute("data-id");
-        button.addEventListener("click", (e) => updateTodo(e, id, todos[id]));
+      const todoForm = document.querySelectorAll(".todo-form");
+      for (let form of todoForm) {
+        const id = form.getAttribute("data-id");
+        form.addEventListener("submit", (e) => updateTodo(e, id, todos[id]));
       }
     });
 
