@@ -153,6 +153,10 @@ function updateTodo(e, id, todo) {
   }
 }
 
+function deleteTodo(project, todo) {
+  PubSub.publish("delete_todo", { project, todo });
+}
+
 export default function AppUI() {
   document.body.appendChild(ProjectUI());
   const todosContainer = document.querySelector("#todos-container");
@@ -175,12 +179,14 @@ export default function AppUI() {
 
       const btnsViewTodo = document.querySelectorAll(".context-view");
       for (let button of btnsViewTodo) {
-        const todo =
-          todos[
-            button.parentNode.parentNode.parentNode.getAttribute("data-id")
-          ];
-        button.removeEventListener("click", () => openSidebar(todo));
-        button.addEventListener("click", () => openSidebar(todo));
+        const id =
+          button.parentNode.parentNode.parentNode.getAttribute("data-id");
+        button.removeEventListener("click", () =>
+          openSidebar(todos[todos.findIndex((t) => t.id == id)])
+        );
+        button.addEventListener("click", () =>
+          openSidebar(todos[todos.findIndex((t) => t.id == id)])
+        );
       }
 
       const btnsEditTodo = document.querySelectorAll(".context-edit");
@@ -193,13 +199,22 @@ export default function AppUI() {
       const btnsCancelEdit = document.querySelectorAll(".btn-cancel-edit");
       for (let button of btnsCancelEdit) {
         const id = button.parentNode.parentNode.getAttribute("data-id");
-        button.addEventListener("click", () => closeEditInputs(id, todos[id]));
+        button.addEventListener("click", () =>
+          closeEditInputs(id, todos[todos.findIndex((t) => t.id == id)])
+        );
       }
 
       const todoForm = document.querySelectorAll(".todo-form");
       for (let form of todoForm) {
         const id = form.getAttribute("data-id");
-        form.addEventListener("submit", (e) => updateTodo(e, id, todos[id]));
+        form.addEventListener("submit", (e) => updateTodo(e, id, todos[todos.findIndex((t) => t.id == id)]));
+      }
+
+      const btnsDeleteTodo = document.querySelectorAll(".context-delete");
+      for (let button of btnsDeleteTodo) {
+        const id =
+          button.parentNode.parentNode.parentNode.getAttribute("data-id");
+        button.addEventListener("click", () => deleteTodo(project, todos[todos.findIndex((t) => t.id == id)]));
       }
     });
 

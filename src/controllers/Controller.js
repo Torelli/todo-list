@@ -19,4 +19,8 @@ export default function Controller() {
     updateTodo.priority(data[0], data[4]);
     PubSub.publish("get_todos");
   });
+  PubSub.subscribe("delete_todo", (msg, data) => {
+    deleteTodo(data.project, data.todo);
+    PubSub.publish("get_todos");
+  });
 }
