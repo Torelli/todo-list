@@ -89,7 +89,7 @@ function populateTodoViewSidebar() {
   return todoViewSidebarWithin;
 }
 
-export default function ProjectUI(project) {
+export default function ProjectUI() {
   const container = document.createElement("div");
   container.classList.add(
     "p-8",
@@ -120,7 +120,6 @@ export default function ProjectUI(project) {
   const projectTitle = document.createElement("h2");
   projectTitle.classList.add("flex", "gap-2", "text-3xl", "font-bold");
   projectTitle.setAttribute("id", "project-title");
-  projectTitle.innerHTML = `<i class="fa-solid ${project.icon}"></i>${project.title}`;
   container.appendChild(projectTitle);
 
   const projectDescription = document.createElement("p");
@@ -131,7 +130,6 @@ export default function ProjectUI(project) {
     "text-slate-500"
   );
   projectDescription.setAttribute("id", "project-description");
-  projectDescription.innerText = project.description;
   container.appendChild(projectDescription);
 
   const btnContainer = document.createElement("div");
