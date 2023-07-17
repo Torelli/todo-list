@@ -7,6 +7,7 @@ import updateTodo from "./Todos/updateTodo";
 import deleteTodo from "./Todos/deleteTodo";
 
 export default function Controller() {
+  PubSub.publish("get_projects", projects);
   PubSub.publish("get_project", projects[0].getProject());
   PubSub.subscribe("new_todo", (msg, data) => {
     createTodo(data[0], data[1], data[2], data[3], data[4], data[5]);

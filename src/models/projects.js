@@ -1,9 +1,17 @@
-const projectsFactory = (title, description, dueDate, todos = []) => {
+const projectsFactory = (
+  id,
+  icon,
+  isPinned,
+  title,
+  description,
+  dueDate,
+  todos = []
+) => {
   function getProject() {
     return this;
   }
 
-  return { title, description, dueDate, todos, getProject };
+  return { id, icon, isPinned, title, description, dueDate, todos, getProject };
 };
 
 export default projectsFactory;

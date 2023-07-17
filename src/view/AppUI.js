@@ -196,42 +196,57 @@ function updateTodoStatus(todo) {
 function toggleSidebar(e) {
   const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
   const btnCollapseSidebarIcon = btnCollapseSidebar.children[0];
+  const projects = document.querySelector(
+    "#pinned-projects-container"
+  ).children;
   if (btnCollapseSidebarIcon.classList.contains("-scale-100")) {
+    for (let project of projects) {
+      project.children[1].classList.add("opacity-0");
+    }
+
     btnCollapseSidebar.classList.remove("text-right");
+    btnCollapseSidebar.classList.add("hover:bg-slate-800/25");
     btnCollapseSidebar.classList.add("text-center");
 
     btnCollapseSidebarIcon.classList.remove("-scale-100");
 
-    document.body.classList.remove("grid-cols-[30%_auto]");
+    document.body.classList.remove("grid-cols-[20%_auto]");
     document.body.classList.add("grid-cols-[50px_auto]");
   } else {
+    for (let project of projects) {
+      project.children[1].classList.remove("opacity-0");
+    }
+
     btnCollapseSidebar.classList.remove("text-center");
+    btnCollapseSidebar.classList.remove("hover:bg-slate-800/25");
     btnCollapseSidebar.classList.add("text-right");
 
     btnCollapseSidebarIcon.classList.add("-scale-100");
 
     document.body.classList.remove("grid-cols-[50px_auto]");
-    document.body.classList.add("grid-cols-[30%_auto]");
+    document.body.classList.add("grid-cols-[20%_auto]");
   }
 }
 
 export default function AppUI() {
-  document.body.appendChild(ProjectSidebarUI());
-  document.body.appendChild(ProjectUI());
+  PubSub.subscribe("get_projects", (msg, projects) => {
+    document.body.appendChild(ProjectSidebarUI(projects));
 
-  const todosContainer = document.querySelector("#todos-container");
-  const projectTitle = document.querySelector("#project-title");
-  const projectDescription = document.querySelector("#project-description");
-  const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
-  const btnCloseDialog = document.querySelector("#btn-close-dialog");
-  const btnCancelDialog = document.querySelector("#btn-cancel");
-  const btnAddTodo = document.querySelector("#btn-add");
-  const btnCloseSidebar = document.querySelector("#btn-close-sidebar");
+    const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
+
+    btnCollapseSidebar.addEventListener("click", toggleSidebar);
+  });
 
   PubSub.subscribe("get_project", (msg, project) => {
+    document.body.appendChild(ProjectUI(project));
+
+    const todosContainer = document.querySelector("#todos-container");
+    const btnCloseDialog = document.querySelector("#btn-close-dialog");
+    const btnCancelDialog = document.querySelector("#btn-cancel");
+    const btnAddTodo = document.querySelector("#btn-add");
+    const btnCloseSidebar = document.querySelector("#btn-close-sidebar");
+
     const todos = project.todos;
-    projectTitle.innerText = project.title;
-    projectDescription.innerText = project.description;
 
     PubSub.subscribe("get_todos", () => {
       TodosUI(todos, todosContainer);
@@ -290,8 +305,6 @@ export default function AppUI() {
         );
       }
     });
-
-    btnCollapseSidebar.addEventListener("click", toggleSidebar);
 
     btnAddTodo.addEventListener("click", (e) => addTodo(e, project));
 
