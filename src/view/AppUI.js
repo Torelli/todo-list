@@ -117,6 +117,10 @@ function addTodo(e, project) {
   const desc = document.querySelector("#description").value;
   const dueDate = document.querySelector("#due-date").value;
   const priority = document.querySelector("#priority").value;
+  let formattedDate = dueDate;
+
+  if (dueDate != "") formattedDate = new Date(dueDate);
+
   if (title != "") {
     closeDialog();
     e.preventDefault();
@@ -124,7 +128,7 @@ function addTodo(e, project) {
       project,
       title,
       desc,
-      new Date(dueDate),
+      formattedDate,
       priority,
       false,
     ]);
@@ -140,6 +144,9 @@ function updateTodo(e, id, todo) {
   const description = document.querySelector(`#desc-input-${id}`).value;
   const date = document.querySelector(`#date-input-${id}`).value;
   const priority = document.querySelector(`#priority-input-${id}`).value;
+  let formattedDate = date;
+
+  if (date != "") formattedDate = new Date(date);
 
   if (title != "") {
     e.preventDefault();
@@ -147,7 +154,7 @@ function updateTodo(e, id, todo) {
       todo,
       title,
       description,
-      new Date(date),
+      formattedDate,
       priority,
     ]);
   }

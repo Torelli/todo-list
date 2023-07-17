@@ -78,7 +78,7 @@ function stylizeDescription(description, descriptionContainer) {
 }
 
 function formatDueDate(dueDate) {
-  if (isNaN(dueDate.getMonth())) {
+  if (dueDate === "") {
     return "";
   }
   const month =
