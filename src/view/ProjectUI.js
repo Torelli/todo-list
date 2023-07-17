@@ -91,7 +91,12 @@ function populateTodoViewSidebar() {
 
 export default function ProjectUI() {
   const container = document.createElement("div");
-  container.classList.add("static", "p-8", "text-slate-700");
+  container.classList.add(
+    "p-8",
+    "text-slate-700",
+    "h-screen",
+    "overflow-y-scroll"
+  );
 
   const todoViewSidebar = document.createElement("div");
   todoViewSidebar.classList.add(
@@ -164,7 +169,6 @@ export default function ProjectUI() {
 
   const todosContainer = document.createElement("div");
   todosContainer.classList.add(
-    "static",
     "mt-12",
     "flex",
     "flex-col",

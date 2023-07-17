@@ -1,6 +1,7 @@
 import PubSub from "pubsub-js";
 import ProjectUI from "./ProjectUI";
 import TodosUI, { formatDueDate } from "./TodosUI";
+import ProjectSidebarUI from "./ProjectSidebarUI";
 
 function closeContextMenu(e) {
   const dialogs = document.querySelectorAll(".context");
@@ -192,11 +193,36 @@ function updateTodoStatus(todo) {
   PubSub.publish("update_todo_status", { todo, status });
 }
 
+function toggleSidebar(e) {
+  const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
+  const btnCollapseSidebarIcon = btnCollapseSidebar.children[0];
+  if (btnCollapseSidebarIcon.classList.contains("-scale-100")) {
+    btnCollapseSidebar.classList.remove("text-right");
+    btnCollapseSidebar.classList.add("text-center");
+
+    btnCollapseSidebarIcon.classList.remove("-scale-100");
+
+    document.body.classList.remove("grid-cols-[30%_auto]");
+    document.body.classList.add("grid-cols-[50px_auto]");
+  } else {
+    btnCollapseSidebar.classList.remove("text-center");
+    btnCollapseSidebar.classList.add("text-right");
+
+    btnCollapseSidebarIcon.classList.add("-scale-100");
+
+    document.body.classList.remove("grid-cols-[50px_auto]");
+    document.body.classList.add("grid-cols-[30%_auto]");
+  }
+}
+
 export default function AppUI() {
+  document.body.appendChild(ProjectSidebarUI());
   document.body.appendChild(ProjectUI());
+
   const todosContainer = document.querySelector("#todos-container");
   const projectTitle = document.querySelector("#project-title");
   const projectDescription = document.querySelector("#project-description");
+  const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
   const btnCloseDialog = document.querySelector("#btn-close-dialog");
   const btnCancelDialog = document.querySelector("#btn-cancel");
   const btnAddTodo = document.querySelector("#btn-add");
@@ -264,6 +290,8 @@ export default function AppUI() {
         );
       }
     });
+
+    btnCollapseSidebar.addEventListener("click", toggleSidebar);
 
     btnAddTodo.addEventListener("click", (e) => addTodo(e, project));
 
