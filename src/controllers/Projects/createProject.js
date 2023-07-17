@@ -6,7 +6,14 @@ const projects = [
 
 export default function createProject(title, description, dueDate) {
   projects.push(
-    projectsFactory(projects.length, icon, title, description, dueDate)
+    projectsFactory(
+      projects.length,
+      "fa-list",
+      false,
+      title,
+      description,
+      dueDate
+    )
   );
 }
 
