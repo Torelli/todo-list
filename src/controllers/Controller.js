@@ -23,4 +23,7 @@ export default function Controller() {
     deleteTodo(data.project, data.todo);
     PubSub.publish("get_todos");
   });
+  PubSub.subscribe("update_todo_status", (msg, data) => {
+    updateTodo.isFinished(data.todo, data.status);
+  });
 }

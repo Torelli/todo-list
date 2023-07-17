@@ -157,6 +157,34 @@ function deleteTodo(project, todo) {
   PubSub.publish("delete_todo", { project, todo });
 }
 
+function updateTodoStatus(todo) {
+  const btnStatusIcon = document.querySelector(`#status-${todo.id}`).children[0]
+    .children[0];
+  const btnStatusTooltip = document.querySelector(`#status-${todo.id}`)
+    .children[0].children[1];
+  let status;
+  if (todo.isFinished) {
+    status = false;
+    btnStatusIcon.setAttribute("state", "morph-check-out");
+
+    btnStatusTooltip.classList.remove(
+      "bg-green-300",
+      "text-green-800",
+      "-left-4"
+    );
+    btnStatusTooltip.classList.add("bg-red-300", "text-red-800", "-left-6");
+    btnStatusTooltip.innerText = "Unfinished";
+  } else {
+    status = true;
+    btnStatusIcon.setAttribute("state", "morph-check-in");
+
+    btnStatusTooltip.classList.remove("bg-red-300", "text-red-800", "-left-6");
+    btnStatusTooltip.classList.add("bg-green-300", "text-green-800", "-left-4");
+    btnStatusTooltip.innerText = "Finished";
+  }
+  PubSub.publish("update_todo_status", { todo, status });
+}
+
 export default function AppUI() {
   document.body.appendChild(ProjectUI());
   const todosContainer = document.querySelector("#todos-container");
@@ -207,14 +235,26 @@ export default function AppUI() {
       const todoForm = document.querySelectorAll(".todo-form");
       for (let form of todoForm) {
         const id = form.getAttribute("data-id");
-        form.addEventListener("submit", (e) => updateTodo(e, id, todos[todos.findIndex((t) => t.id == id)]));
+        form.addEventListener("submit", (e) =>
+          updateTodo(e, id, todos[todos.findIndex((t) => t.id == id)])
+        );
       }
 
       const btnsDeleteTodo = document.querySelectorAll(".context-delete");
       for (let button of btnsDeleteTodo) {
         const id =
           button.parentNode.parentNode.parentNode.getAttribute("data-id");
-        button.addEventListener("click", () => deleteTodo(project, todos[todos.findIndex((t) => t.id == id)]));
+        button.addEventListener("click", () =>
+          deleteTodo(project, todos[todos.findIndex((t) => t.id == id)])
+        );
+      }
+
+      const btnsChangeStatus = document.querySelectorAll(".btn-status");
+      for (let button of btnsChangeStatus) {
+        const id = button.parentNode.getAttribute("data-id");
+        button.addEventListener("click", () =>
+          updateTodoStatus(todos[todos.findIndex((t) => t.id == id)])
+        );
       }
     });
 

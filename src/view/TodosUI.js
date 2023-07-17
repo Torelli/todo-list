@@ -47,22 +47,28 @@ function stylizePriority(priority, priorityContainer) {
 
 function stylizeStatus(status) {
   if (status) {
-    return `<button class="text-center w-12">
+    return `<button type="button" class="btn-status group relative text-center w-12 disabled:cursor-not-allowed">
     <lord-icon
         src="https://cdn.lordicon.com/egiwmiit.json"
         trigger="click"
         colors="primary:#121331"
         state="morph-check-out">
-    </lord-icon></i>
+    </lord-icon>
+    <div class="opacity-0 -translate-y-1 whitespace-nowrap bg-green-300 text-green-800 text-center text-sm rounded-lg py-2 absolute z-10 group-hover:translate-y-0 group-hover:opacity-100 top-8 -left-4 px-3 pointer-events-none transition-all">
+      Finished
+    </div>
     </button>`;
   } else {
-    return `<button class="text-center w-12">
+    return `<button type="button" class="btn-status group relative text-center w-12 disabled:cursor-not-allowed">
     <lord-icon
       src="https://cdn.lordicon.com/egiwmiit.json"
       trigger="click"
       colors="primary:#121331"
       state="morph-check-in">
-    </lord-icon></i>
+    </lord-icon>
+    <div class="opacity-0 -translate-y-1 whitespace-nowrap bg-red-300 text-red-800 text-center text-sm rounded-lg py-2 absolute z-10 group-hover:translate-y-0 group-hover:opacity-100 top-8 -left-6 px-3 pointer-events-none transition-all">
+      Unfinished
+    </div>
     </button>`;
   }
 }
@@ -261,6 +267,8 @@ export default function TodosUI(todos, todosContainer) {
       tableRow.appendChild(priority);
 
       const status = document.createElement("div");
+      status.setAttribute("id", `status-${todo.id}`);
+      status.setAttribute("data-id", `${todo.id}`);
       status.classList.add("flex", "items-center", "gap-14");
       status.innerHTML = stylizeStatus(todo.isFinished);
 

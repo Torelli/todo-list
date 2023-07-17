@@ -31,7 +31,7 @@ function updatePriority(todo, priority) {
 }
 
 function updateIsFinished(todo, isFinished) {
-  if (isFinished && isFinished != todo.isFinished) {
+  if (isFinished != todo.isFinished) {
     todo.isFinished = isFinished;
   } else {
     false;
