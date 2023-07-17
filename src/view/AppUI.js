@@ -3,6 +3,122 @@ import ProjectUI from "./ProjectUI";
 import TodosUI, { formatDueDate } from "./TodosUI";
 import ProjectSidebarUI from "./ProjectSidebarUI";
 
+function populateProjectSidebarUI(projects) {
+  const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
+  const btnToggleInput = document.querySelector("#btn-toggle-input");
+  const lblCreateProject = document.querySelector("#lbl-create-project");
+
+  btnCollapseSidebar.addEventListener("click", toggleSidebar);
+
+  btnToggleInput.addEventListener("click", toggleProjectInput);
+
+  lblCreateProject.addEventListener("click", toggleProjectInput);
+
+  const pinnedProjectsContainer = document.querySelector(
+    "#pinned-projects-container"
+  );
+  const unpinnedProjectsContainer = document.querySelector(
+    "#unpinned-projects-container"
+  );
+
+  for (let project of projects) {
+    const btnProject = document.createElement("button");
+    btnProject.classList.add(
+      "w-full",
+      "py-2",
+      "px-4",
+      "flex",
+      "gap-4",
+      "items-center",
+      "hover:bg-slate-800/25"
+    );
+    btnProject.innerHTML = `<i class="fa-solid ${project.icon}"></i><span class="opacity-0 transition-all">${project.title}</span>`;
+    if (project.isPinned) {
+      pinnedProjectsContainer.appendChild(btnProject);
+    } else {
+      unpinnedProjectsContainer.appendChild(btnProject);
+    }
+  }
+}
+
+function populateProjectUI(project) {
+  const btnCloseDialog = document.querySelector("#btn-close-dialog");
+  const btnCancelDialog = document.querySelector("#btn-cancel");
+  const btnAddTodo = document.querySelector("#btn-add");
+  const btnCloseSidebar = document.querySelector("#btn-close-sidebar");
+
+  btnAddTodo.addEventListener("click", (e) => addTodo(e, project));
+
+  btnCloseSidebar.addEventListener("click", closeSidebar);
+
+  btnCloseDialog.addEventListener("click", closeDialog);
+  btnCancelDialog.addEventListener("click", closeDialog);
+
+  const projectTitle = document.querySelector("#project-title");
+  const projectDescription = document.querySelector("#project-description");
+
+  projectTitle.innerHTML = `<i class="fa-solid ${project.icon}"></i>${project.title}`;
+  projectDescription.innerText = project.description;
+}
+
+function populateTodosUI(project) {
+  const todosContainer = document.querySelector("#todos-container");
+  const todos = project.todos;
+
+  TodosUI(todos, todosContainer);
+  document.removeEventListener("mouseup", closeContextMenu);
+  document.addEventListener("mouseup", closeContextMenu);
+
+  const btnsViewTodo = document.querySelectorAll(".context-view");
+  for (let button of btnsViewTodo) {
+    const id = button.parentNode.parentNode.parentNode.getAttribute("data-id");
+    button.removeEventListener("click", () =>
+      openSidebar(todos[todos.findIndex((t) => t.id == id)])
+    );
+    button.addEventListener("click", () =>
+      openSidebar(todos[todos.findIndex((t) => t.id == id)])
+    );
+  }
+
+  const btnsEditTodo = document.querySelectorAll(".context-edit");
+  for (let button of btnsEditTodo) {
+    const id = button.parentNode.parentNode.parentNode.getAttribute("data-id");
+    button.addEventListener("click", () => openEditInputs(id));
+  }
+
+  const btnsCancelEdit = document.querySelectorAll(".btn-cancel-edit");
+  for (let button of btnsCancelEdit) {
+    const id = button.parentNode.parentNode.getAttribute("data-id");
+    button.addEventListener("click", () =>
+      closeEditInputs(id, todos[todos.findIndex((t) => t.id == id)])
+    );
+  }
+
+  const todoForm = document.querySelectorAll(".todo-form");
+  for (let form of todoForm) {
+    const id = form.getAttribute("data-id");
+    form.addEventListener("submit", (e) =>
+      updateTodo(e, id, todos[todos.findIndex((t) => t.id == id)])
+    );
+  }
+
+  const btnsDeleteTodo = document.querySelectorAll(".context-delete");
+  for (let button of btnsDeleteTodo) {
+    const id = button.parentNode.parentNode.parentNode.getAttribute("data-id");
+    button.addEventListener("click", () =>
+      deleteTodo(project, todos[todos.findIndex((t) => t.id == id)])
+    );
+  }
+
+  const btnsChangeStatus = document.querySelectorAll(".btn-status");
+  for (let button of btnsChangeStatus) {
+    const id = button.parentNode.getAttribute("data-id");
+    button.addEventListener("click", () =>
+      updateTodoStatus(todos[todos.findIndex((t) => t.id == id)])
+    );
+  }
+}
+
 function closeContextMenu(e) {
   const dialogs = document.querySelectorAll(".context");
   for (let dialog of dialogs) {
@@ -193,13 +309,17 @@ function updateTodoStatus(todo) {
   PubSub.publish("update_todo_status", { todo, status });
 }
 
-function toggleSidebar(e) {
+function toggleSidebar() {
   const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
+  const createProjectContainer = document.querySelector(
+    "#create-project-container"
+  );
   const btnCollapseSidebarIcon = btnCollapseSidebar.children[0];
   const projects = document.querySelector(
     "#pinned-projects-container"
   ).children;
   if (btnCollapseSidebarIcon.classList.contains("-scale-100")) {
+    createProjectContainer.children[1].classList.add("opacity-0");
     for (let project of projects) {
       project.children[1].classList.add("opacity-0");
     }
@@ -213,6 +333,7 @@ function toggleSidebar(e) {
     document.body.classList.remove("grid-cols-[20%_auto]");
     document.body.classList.add("grid-cols-[50px_auto]");
   } else {
+    createProjectContainer.children[1].classList.remove("opacity-0");
     for (let project of projects) {
       project.children[1].classList.remove("opacity-0");
     }
@@ -228,89 +349,61 @@ function toggleSidebar(e) {
   }
 }
 
+function toggleProjectInput() {
+  const btnToggleInputIcon =
+    document.querySelector("#btn-toggle-input").children[0];
+  const btnAddProject = document.querySelector("#btn-add-project");
+  const createProjectContainer = document.querySelector(
+    "#create-project-container"
+  );
+  const lblCreateProject = document.querySelector("#lbl-create-project");
+  const inputTitle = document.querySelector("#input-create-project");
+
+  if (btnToggleInputIcon.classList.contains("fa-circle-minus")) {
+    btnToggleInputIcon.classList.replace("fa-circle-minus", "fa-circle-plus");
+
+    btnAddProject.classList.add("hidden");
+
+    createProjectContainer.classList.add("cursor-pointer");
+    createProjectContainer.classList.replace("justify-between", "gap-2");
+
+    inputTitle.disabled = true;
+    inputTitle.classList.add("hidden");
+
+    lblCreateProject.classList.remove("hidden");
+  } else {
+    btnAddProject.classList.remove("hidden");
+
+    createProjectContainer.classList.remove("cursor-pointer");
+    createProjectContainer.classList.replace("gap-2", "justify-between");
+
+    btnToggleInputIcon.classList.replace("fa-circle-plus", "fa-circle-minus");
+
+    if (lblCreateProject.classList.contains("opacity-0")) toggleSidebar();
+
+    inputTitle.classList.remove("hidden");
+
+    inputTitle.disabled = false;
+
+    lblCreateProject.classList.add("hidden");
+
+    inputTitle.focus();
+  }
+}
+
 export default function AppUI() {
+  document.body.appendChild(ProjectSidebarUI());
+  document.body.appendChild(ProjectUI());
+
   PubSub.subscribe("get_projects", (msg, projects) => {
-    document.body.appendChild(ProjectSidebarUI(projects));
-
-    const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
-
-    btnCollapseSidebar.addEventListener("click", toggleSidebar);
+    populateProjectSidebarUI(projects);
   });
 
   PubSub.subscribe("get_project", (msg, project) => {
-    document.body.appendChild(ProjectUI(project));
+    populateProjectUI(project);
 
-    const todosContainer = document.querySelector("#todos-container");
-    const btnCloseDialog = document.querySelector("#btn-close-dialog");
-    const btnCancelDialog = document.querySelector("#btn-cancel");
-    const btnAddTodo = document.querySelector("#btn-add");
-    const btnCloseSidebar = document.querySelector("#btn-close-sidebar");
+    populateTodosUI(project);
 
-    const todos = project.todos;
-
-    PubSub.subscribe("get_todos", () => {
-      TodosUI(todos, todosContainer);
-      document.removeEventListener("mouseup", closeContextMenu);
-      document.addEventListener("mouseup", closeContextMenu);
-
-      const btnsViewTodo = document.querySelectorAll(".context-view");
-      for (let button of btnsViewTodo) {
-        const id =
-          button.parentNode.parentNode.parentNode.getAttribute("data-id");
-        button.removeEventListener("click", () =>
-          openSidebar(todos[todos.findIndex((t) => t.id == id)])
-        );
-        button.addEventListener("click", () =>
-          openSidebar(todos[todos.findIndex((t) => t.id == id)])
-        );
-      }
-
-      const btnsEditTodo = document.querySelectorAll(".context-edit");
-      for (let button of btnsEditTodo) {
-        const id =
-          button.parentNode.parentNode.parentNode.getAttribute("data-id");
-        button.addEventListener("click", () => openEditInputs(id));
-      }
-
-      const btnsCancelEdit = document.querySelectorAll(".btn-cancel-edit");
-      for (let button of btnsCancelEdit) {
-        const id = button.parentNode.parentNode.getAttribute("data-id");
-        button.addEventListener("click", () =>
-          closeEditInputs(id, todos[todos.findIndex((t) => t.id == id)])
-        );
-      }
-
-      const todoForm = document.querySelectorAll(".todo-form");
-      for (let form of todoForm) {
-        const id = form.getAttribute("data-id");
-        form.addEventListener("submit", (e) =>
-          updateTodo(e, id, todos[todos.findIndex((t) => t.id == id)])
-        );
-      }
-
-      const btnsDeleteTodo = document.querySelectorAll(".context-delete");
-      for (let button of btnsDeleteTodo) {
-        const id =
-          button.parentNode.parentNode.parentNode.getAttribute("data-id");
-        button.addEventListener("click", () =>
-          deleteTodo(project, todos[todos.findIndex((t) => t.id == id)])
-        );
-      }
-
-      const btnsChangeStatus = document.querySelectorAll(".btn-status");
-      for (let button of btnsChangeStatus) {
-        const id = button.parentNode.getAttribute("data-id");
-        button.addEventListener("click", () =>
-          updateTodoStatus(todos[todos.findIndex((t) => t.id == id)])
-        );
-      }
-    });
-
-    btnAddTodo.addEventListener("click", (e) => addTodo(e, project));
-
-    btnCloseSidebar.addEventListener("click", closeSidebar);
-
-    btnCloseDialog.addEventListener("click", closeDialog);
-    btnCancelDialog.addEventListener("click", closeDialog);
+    PubSub.subscribe("get_todos", () => populateTodosUI(project));
   });
 }

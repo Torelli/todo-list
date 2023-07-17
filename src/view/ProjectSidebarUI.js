@@ -46,16 +46,13 @@ export default function ProjectSidebarUI() {
   createProjectContainer.setAttribute("id", "create-project-container");
   createProjectContainer.classList.add(
     "w-full",
-    "py-2",
-    "px-4",
     "flex",
-    "gap-2",
     "items-center",
     "hover:bg-slate-800/25",
     "text-lg",
     "cursor-pointer"
   );
-  createProjectContainer.innerHTML = `<i class="fa-solid fa-circle-plus fa-lg"></i><input id="input-create-project" type="text" placeholder="Project title" class="w-9/12 opacity-0 text-slate-700 pl-1 disabled:bg-transparent disabled:text-white transition-all disabled:cursor-pointer" value="Create Project" disabled /> <button id="btn-add-project"><i class="fa-solid fa-check"></i></button>`;
+  createProjectContainer.innerHTML = `<button class="h-full py-2 px-4" id="btn-toggle-input"><i class="fa-solid fa-circle-plus fa-lg"></i></button><label id="lbl-create-project" class="opacity-0 cursor-pointer w-full py-2">Create project</label><input id="input-create-project" type="text" placeholder="Project title" class="hidden w-9/12 text-slate-700 pl-1 transition-all disabled:cursor-pointer rounded bg-white border border-slate-400 focus-visible:outline-0 focus-visible:border-slate-700" disabled /> <button class="hidden py-2 px-4" id="btn-add-project"><i class="fa-solid fa-check"></i></button>`;
   container.appendChild(createProjectContainer);
 
   const unpinnedProjectsContainer = document.createElement("div");
