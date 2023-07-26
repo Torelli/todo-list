@@ -6,13 +6,13 @@ import ProjectSidebarUI from "./ProjectSidebarUI";
 function populateProjectSidebarUI(projects) {
   const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
   const btnToggleInput = document.querySelector("#btn-toggle-input");
-  const lblCreateProject = document.querySelector("#lbl-create-project");
+  const btnAddProject = document.querySelector("#btn-add-project");
 
   btnCollapseSidebar.addEventListener("click", toggleSidebar);
 
   btnToggleInput.addEventListener("click", toggleProjectInput);
 
-  lblCreateProject.addEventListener("click", toggleProjectInput);
+  btnAddProject.addEventListener("click", addProject);
 
   const pinnedProjectsContainer = document.querySelector(
     "#pinned-projects-container"
@@ -21,22 +21,26 @@ function populateProjectSidebarUI(projects) {
     "#unpinned-projects-container"
   );
 
+  pinnedProjectsContainer.innerHTML = "";
+  unpinnedProjectsContainer.innerHTML = `<div id="unpinned-title" class="w-full py-2 px-[0.9rem] flex gap-4 items-center"><i class="fa-solid fa-bars-staggered fa-lg"></i><span>Other Projects</span></div><div class="h-full overflow-y-auto"></div>`;
+
   for (let project of projects) {
-    const btnProject = document.createElement("button");
+    const btnProject = document.createElement("div");
     btnProject.classList.add(
       "w-full",
       "py-2",
-      "px-4",
+      "px-[0.9rem]",
       "flex",
-      "gap-4",
+      "justify-between",
       "items-center",
       "hover:bg-slate-800/25"
     );
-    btnProject.innerHTML = `<i class="fa-solid ${project.icon}"></i><span class="opacity-0 transition-all">${project.title}</span>`;
     if (project.isPinned) {
+      btnProject.innerHTML = `<button class="flex items-center gap-4"><i class="fa-solid ${project.icon} fa-lg"></i><span class="transition-all">${project.title}</span></button><button><i class="fa-solid fa-ellipsis"></i></button>`;
       pinnedProjectsContainer.appendChild(btnProject);
     } else {
-      unpinnedProjectsContainer.appendChild(btnProject);
+      btnProject.innerHTML = `<button class="flex gap-4"><span class="transition-all">${project.title}</span></button><button><i class="fa-solid fa-ellipsis"></i></button>`;
+      unpinnedProjectsContainer.children[1].appendChild(btnProject);
     }
   }
 }
@@ -229,6 +233,25 @@ function closeEditInputs(id, todo) {
   priorityBadge.classList.remove("hidden");
 }
 
+function addProject(e) {
+  const title = document.querySelector("#input-project-title").value;
+  const description = document.querySelector(
+    "#input-project-description"
+  ).value;
+  const dueDate = document.querySelector("#input-project-due-date").value;
+  let formattedDate = dueDate;
+
+  if (dueDate != "") formattedDate = new Date(dueDate);
+
+  if (title != "") {
+    e.preventDefault();
+    PubSub.publish("new_project", { title, description, formatDueDate });
+    document.querySelector("#input-project-title").value = "";
+    document.querySelector("#input-project-description").value = "";
+    document.querySelector("#input-project-due-date").value = "";
+  }
+}
+
 function addTodo(e, project) {
   const title = document.querySelector("#title").value;
   const desc = document.querySelector("#description").value;
@@ -309,85 +332,138 @@ function updateTodoStatus(todo) {
   PubSub.publish("update_todo_status", { todo, status });
 }
 
-function toggleSidebar() {
+function openProjectsSidebar() {
   const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
-  const createProjectContainer = document.querySelector(
-    "#create-project-container"
-  );
   const btnCollapseSidebarIcon = btnCollapseSidebar.children[0];
-  const projects = document.querySelector(
-    "#pinned-projects-container"
-  ).children;
+  const unpinnedProjectsContainer = document.querySelector(
+    "#unpinned-projects-container"
+  );
+
+  for (let project of unpinnedProjectsContainer.children) {
+    if (project.getAttribute("id") != "unpinned-title") {
+      project.classList.remove("opacity-0");
+      project.classList.add("opacity-100");
+    }
+  }
+
+  btnCollapseSidebar.classList.remove("text-center");
+  btnCollapseSidebar.classList.add("text-right");
+
+  btnCollapseSidebarIcon.classList.add("-scale-100");
+
+  document.body.classList.remove("grid-cols-[50px_auto]");
+  document.body.classList.add(
+    "sm:grid-cols-[20%_auto]",
+    "grid-cols-[60%_auto]"
+  );
+}
+
+function closeProjectsSidebar() {
+  const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
+  const btnCollapseSidebarIcon = btnCollapseSidebar.children[0];
+  const unpinnedProjectsContainer = document.querySelector(
+    "#unpinned-projects-container"
+  );
+
+  for (let project of unpinnedProjectsContainer.children) {
+    if (project.getAttribute("id") != "unpinned-title") {
+      project.classList.remove("opacity-100");
+      project.classList.add("opacity-0");
+    }
+  }
+  btnCollapseSidebar.classList.remove("text-right");
+  btnCollapseSidebar.classList.add("text-center");
+
+  btnCollapseSidebarIcon.classList.remove("-scale-100");
+
+  document.body.classList.remove(
+    "sm:grid-cols-[20%_auto]",
+    "grid-cols-[60%_auto]"
+  );
+  document.body.classList.add("grid-cols-[50px_auto]");
+}
+
+function toggleSidebar() {
+  const btnCollapseSidebarIcon = document.querySelector("#btn-collapse-sidebar")
+    .children[0];
   if (btnCollapseSidebarIcon.classList.contains("-scale-100")) {
-    createProjectContainer.children[1].classList.add("opacity-0");
-    for (let project of projects) {
-      project.children[1].classList.add("opacity-0");
-    }
-
-    btnCollapseSidebar.classList.remove("text-right");
-    btnCollapseSidebar.classList.add("hover:bg-slate-800/25");
-    btnCollapseSidebar.classList.add("text-center");
-
-    btnCollapseSidebarIcon.classList.remove("-scale-100");
-
-    document.body.classList.remove("grid-cols-[20%_auto]");
-    document.body.classList.add("grid-cols-[50px_auto]");
+    closeProjectsSidebar();
+    closeProjectInput();
   } else {
-    createProjectContainer.children[1].classList.remove("opacity-0");
-    for (let project of projects) {
-      project.children[1].classList.remove("opacity-0");
-    }
-
-    btnCollapseSidebar.classList.remove("text-center");
-    btnCollapseSidebar.classList.remove("hover:bg-slate-800/25");
-    btnCollapseSidebar.classList.add("text-right");
-
-    btnCollapseSidebarIcon.classList.add("-scale-100");
-
-    document.body.classList.remove("grid-cols-[50px_auto]");
-    document.body.classList.add("grid-cols-[20%_auto]");
+    openProjectsSidebar();
   }
 }
 
-function toggleProjectInput() {
-  const btnToggleInputIcon =
-    document.querySelector("#btn-toggle-input").children[0];
-  const btnAddProject = document.querySelector("#btn-add-project");
-  const createProjectContainer = document.querySelector(
-    "#create-project-container"
+function openProjectInput() {
+  const unpinnedProjectsContainer = document.querySelector(
+    "#unpinned-projects-container"
   );
-  const lblCreateProject = document.querySelector("#lbl-create-project");
-  const inputTitle = document.querySelector("#input-create-project");
+  const btnToggleInput = document.querySelector("#btn-toggle-input");
+  const btnToggleInputText = btnToggleInput.children[1];
+  const btnToggleInputIcon = btnToggleInput.children[0];
+  const formCreateProject = document.querySelector("#form-create-project");
+  const inputElements = formCreateProject.children;
+  const inputTitle = document.querySelector("#input-project-title");
+  const btnCollapseSidebar = document.querySelector("#btn-collapse-sidebar");
+
+  unpinnedProjectsContainer.classList.replace("h-[30%]", "h-[19%]");
+
+  btnToggleInputIcon.classList.replace("fa-circle-plus", "fa-circle-minus");
+
+  if (btnCollapseSidebar.classList.contains("text-center"))
+    openProjectsSidebar();
+
+  formCreateProject.classList.replace("max-h-0", "max-h-60");
+  formCreateProject.classList.replace("p-0", "px-4");
+
+  for (let input of inputElements) {
+    input.disabled = false;
+  }
+
+  btnToggleInputText.innerText = "Cancel";
+
+  inputTitle.focus();
+}
+
+function closeProjectInput() {
+  const unpinnedProjectsContainer = document.querySelector(
+    "#unpinned-projects-container"
+  );
+  const btnToggleInput = document.querySelector("#btn-toggle-input");
+  const btnToggleInputText = btnToggleInput.children[1];
+  const btnToggleInputIcon = btnToggleInput.children[0];
+  const formCreateProject = document.querySelector("#form-create-project");
+  const inputElements = formCreateProject.children;
+  const inputTitle = document.querySelector("#input-project-title");
+  const inputDescription = document.querySelector("#input-project-description");
+  const inputDueDate = document.querySelector("#input-project-due-date");
+
+  inputTitle.value = "";
+  inputDescription.value = "";
+  inputDueDate.value = "";
+
+  unpinnedProjectsContainer.classList.replace("h-[19%]", "h-[30%]");
+
+  btnToggleInputIcon.classList.replace("fa-circle-minus", "fa-circle-plus");
+
+  for (let input of inputElements) {
+    input.disabled = false;
+  }
+
+  formCreateProject.classList.replace("max-h-60", "max-h-0");
+  formCreateProject.classList.replace("px-4", "p-0");
+
+  btnToggleInputText.innerText = "Create Project";
+}
+
+function toggleProjectInput() {
+  const btnToggleInput = document.querySelector("#btn-toggle-input");
+  const btnToggleInputIcon = btnToggleInput.children[0];
 
   if (btnToggleInputIcon.classList.contains("fa-circle-minus")) {
-    btnToggleInputIcon.classList.replace("fa-circle-minus", "fa-circle-plus");
-
-    btnAddProject.classList.add("hidden");
-
-    createProjectContainer.classList.add("cursor-pointer");
-    createProjectContainer.classList.replace("justify-between", "gap-2");
-
-    inputTitle.disabled = true;
-    inputTitle.classList.add("hidden");
-
-    lblCreateProject.classList.remove("hidden");
+    closeProjectInput();
   } else {
-    btnAddProject.classList.remove("hidden");
-
-    createProjectContainer.classList.remove("cursor-pointer");
-    createProjectContainer.classList.replace("gap-2", "justify-between");
-
-    btnToggleInputIcon.classList.replace("fa-circle-plus", "fa-circle-minus");
-
-    if (lblCreateProject.classList.contains("opacity-0")) toggleSidebar();
-
-    inputTitle.classList.remove("hidden");
-
-    inputTitle.disabled = false;
-
-    lblCreateProject.classList.add("hidden");
-
-    inputTitle.focus();
+    openProjectInput();
   }
 }
 

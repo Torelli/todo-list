@@ -95,7 +95,7 @@ export default function ProjectUI() {
     "p-8",
     "text-slate-700",
     "h-screen",
-    "overflow-y-scroll"
+    "overflow-y-auto"
   );
 
   const todoViewSidebar = document.createElement("div");
