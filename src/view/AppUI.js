@@ -36,16 +36,56 @@ function populateProjectSidebarUI(projects) {
       "hover:bg-slate-800/25"
     );
     if (project.isPinned) {
-      btnProject.innerHTML = `<button class="flex items-center gap-4"><i class="fa-solid ${project.icon} fa-lg"></i><span class="transition-all">${project.title}</span></button><button><i class="fa-solid fa-ellipsis"></i></button>`;
+      btnProject.innerHTML = `<button data-id="${project.id}" class="btn-open-project flex items-center gap-4"><i class="fa-solid ${project.icon} fa-lg"></i><span class="transition-all">${project.title}</span></button><button><i class="fa-solid fa-ellipsis"></i></button>`;
       pinnedProjectsContainer.appendChild(btnProject);
     } else {
-      btnProject.innerHTML = `<button class="flex gap-4"><span class="transition-all">${project.title}</span></button><button><i class="fa-solid fa-ellipsis"></i></button>`;
+      btnProject.innerHTML = `<button data-id="${project.id}" class="btn-open-project flex gap-4"><span class="transition-all">${project.title}</span></button><button><i class="fa-solid fa-ellipsis"></i></button>`;
       unpinnedProjectsContainer.children[1].appendChild(btnProject);
     }
   }
+
+  const btnsOpenProject = document.querySelectorAll(".btn-open-project");
+
+  for (let button of btnsOpenProject) {
+    button.addEventListener("click", () =>
+      viewProject(button.getAttribute("data-id"))
+    );
+  }
+}
+
+function viewProject(id) {
+  PubSub.publish("view_project", id);
+}
+
+function refreshProjectEventListeners() {
+  const oldBtnCloseDialog = document.querySelector("#btn-close-dialog");
+  const oldBtnCancelDialog = document.querySelector("#btn-cancel");
+  const oldBtnAddTodo = document.querySelector("#btn-add");
+  const oldBtnCloseSidebar = document.querySelector("#btn-close-sidebar");
+
+  const newBtnCloseDialog = oldBtnCloseDialog.cloneNode(true);
+  const newBtnCancelDialog = oldBtnCancelDialog.cloneNode(true);
+  const newBtnAddTodo = oldBtnAddTodo.cloneNode(true);
+  const newBtnCloseSidebar = oldBtnCloseSidebar.cloneNode(true);
+
+  oldBtnCloseDialog.parentNode.replaceChild(
+    newBtnCloseDialog,
+    oldBtnCloseDialog
+  );
+  oldBtnCancelDialog.parentNode.replaceChild(
+    newBtnCancelDialog,
+    oldBtnCancelDialog
+  );
+  oldBtnAddTodo.parentNode.replaceChild(newBtnAddTodo, oldBtnAddTodo);
+  oldBtnCloseSidebar.parentNode.replaceChild(
+    newBtnCloseSidebar,
+    oldBtnCloseSidebar
+  );
 }
 
 function populateProjectUI(project) {
+  refreshProjectEventListeners();
+
   const btnCloseDialog = document.querySelector("#btn-close-dialog");
   const btnCancelDialog = document.querySelector("#btn-cancel");
   const btnAddTodo = document.querySelector("#btn-add");

@@ -16,6 +16,11 @@ export default function Controller() {
     PubSub.publish("get_projects", projects);
   });
 
+  PubSub.subscribe("view_project", (msg, id) => {
+    const index = projects.findIndex((p) => p.id == id);
+    PubSub.publish("get_project", projects[index].getProject());
+  });
+
   PubSub.subscribe("new_todo", (msg, data) => {
     createTodo(data[0], data[1], data[2], data[3], data[4], data[5]);
     PubSub.publish("get_todos");
